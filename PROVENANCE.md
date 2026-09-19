@@ -23,7 +23,7 @@ The result should therefore be described neither as an autonomous AI proof nor a
 
 The human author is Yi Taifeng, as named on the project manuscript.
 
-- **Choice of problem.** The author chose the irrationality of the Kubota–Leopoldt value ζ₇(3) as the target. This is a case that the literature describes as open (see `INFORMAL_RESULT.md`, §7). The author chose the overall strategy: a determinant irrationality argument with modular forms on X₀(7) and a seven-adic analytic input.
+- **Choice of problem.** The author chose the irrationality of the Kubota–Leopoldt value ζ₇(3) as the target. This is a case that the literature describes as open (see `INFORMAL_RESULT.md`, §7). 
 - **Mathematical direction and architecture.** The author directed the decomposition into these components:
   - the target series and its differential equation;
   - seven-germ independence and the zero estimate (N);
@@ -33,7 +33,7 @@ The human author is Yi Taifeng, as named on the project manuscript.
   - the explicit numerical margin;
   - the radius-49 continuation.
 
-  The author also fixed the normalization of ζ₇(3), namely branch 4 at s = 3, i.e. L₇(3, ω^{−2}). The author then required that the Lean object be the genuine Kubota–Leopoldt value rather than a surrogate.
+  
 - **Rigor requirements.** The author set and enforced a strict verification standard:
   - no `sorry`, `admit`, `native_decide`, `Lean.ofReduceBool` or custom axiom;
   - no literature theorem smuggled in as a hypothesis;
@@ -71,7 +71,7 @@ AI systems contributed substantially, under the direction described above, to:
 
 ## Verification boundary
 
-However any piece of proof text was produced, whether by a person or an AI system, the mathematical claims are established by the Lean kernel. At the final checkpoint:
+Any piece of proof text was produced, the mathematical claims are established by the Lean kernel. At the final checkpoint:
 
 ```text
 #print axioms Zeta7Main.zeta7Three_irrational  →  [propext, Classical.choice, Quot.sound]
