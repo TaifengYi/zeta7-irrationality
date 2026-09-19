@@ -1,0 +1,27 @@
+import Zeta7Proof.Radius49GeometryCore
+
+/-! **ARCHIVAL MODULE — NOT PART OF THE FINAL PROOF GRAPH.**
+
+This module preserves, for the historical record only, the former external input
+`published_radius49_geometric_continuation`. It is imported by no module of the default build.
+The statement `HasRadius49GeometricContinuation` is now proved internally as
+`Zeta7Main.internal_radius49_geometric_continuation` (module `Zeta7Proof.Radius49Internal`),
+and every downstream endpoint uses the internal theorem. -/
+
+set_option autoImplicit false
+noncomputable section
+namespace Zeta7Main
+
+/--
+This is a composite external mathematical input derived from established
+published geometric results. It is not the verbatim statement of any
+single theorem and it is not yet proved inside Lean. Its derivation uses
+Calegari, Theorem 2.3 and Lemma 2.4; Buzzard, Theorem 5.2(2), together
+with the modular-curve and trace framework in his Sections 1–5;
+Loeffler, Theorem 1; and the separately audited domain-inclusion and
+normalized-trace argument. All project-specific formal-series
+identifications are proved independently in Lean.
+-/
+axiom published_radius49_geometric_continuation : HasRadius49GeometricContinuation
+
+end Zeta7Main

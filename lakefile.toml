@@ -1,0 +1,47 @@
+name = "zeta7_proof"
+version = "0.1.0"
+keywords = ["math"]
+defaultTargets = ["Zeta7Proof", "Zeta7Main", "Zeta7AxiomAudit", "Challenge", "Solution"]
+
+[leanOptions]
+pp.unicode.fun = true # pretty-prints `fun a ↦ b`
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+maxSynthPendingDepth = 3
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.34.0-rc2"
+
+[[lean_lib]]
+name = "Zeta7Proof"
+
+[[lean_lib]]
+name = "Stage2A"
+
+[[lean_lib]]
+name = "Stage2B"
+
+[[lean_lib]]
+name = "Stage2Operator"
+
+[[lean_lib]]
+name = "Zeta7Main"
+
+[[lean_lib]]
+name = "Zeta7AxiomAudit"
+
+[[lean_lib]]
+name = "PadicLFunctions"
+globs = ["PadicLFunctions.+"]
+
+[[lean_lib]]
+name = "LeanModularForms"
+globs = ["LeanModularForms.+"]
+
+[[lean_lib]]
+name = "Challenge"
+
+[[lean_lib]]
+name = "Solution"

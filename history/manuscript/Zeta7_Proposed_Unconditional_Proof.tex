@@ -1,0 +1,2104 @@
+% Standalone LaTeX. Compile twice using xelatex.
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=24mm,headheight=15pt]{geometry}
+\usepackage{fontspec,amsmath,amssymb,amsthm,unicode-math}
+\setmainfont{Latin Modern Roman}
+\setsansfont{Latin Modern Sans}
+\setmonofont{DejaVu Sans Mono}[Scale=0.78]
+\setmathfont{Latin Modern Math}
+\usepackage{microtype,booktabs,longtable,array,calc}
+\usepackage{xurl,graphicx,needspace,fancyhdr,fvextra,etoolbox}
+\AtBeginEnvironment{longtable}{\small}
+\usepackage[unicode,hidelinks]{hyperref}
+\usepackage{bookmark}
+\providecommand{\tightlist}{\setlength{\itemsep}{1pt}\setlength{\parskip}{0pt}}
+\DefineVerbatimEnvironment{verbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\normalsize}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\setlength{\LTpre}{7pt}
+\setlength{\LTpost}{7pt}
+\setcounter{secnumdepth}{-1}
+\setcounter{tocdepth}{2}
+\allowdisplaybreaks[2]
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small Zeta-seven: research manuscript and evidence}
+\fancyfoot[C]{\thepage}
+\newtheorem*{claim}{Proposed theorem}
+
+\hypersetup{pdftitle={A determinant argument for the irrationality of zeta7(3)},pdfauthor={Yi Taifeng}}
+\title{A determinant argument for the irrationality of \(\zeta_7(3)\)\\[6pt]\large Proposed unconditional proof}
+\author{Yi Taifeng}
+\date{15 September 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+We present a proposed unconditional determinant proof of the irrationality of the specified Kubota--Leopoldt value \(\zeta_7(3)\). The argument combines geometric continuation of the genuine weight-minus-two Eisenstein specialization, a nonvanishing construction, an annular saving with explicit source-index cost, a simultaneous auxiliary-prime denominator estimate, and a complex energy bound. Exact integer interval arithmetic gives a positive product-formula margin. The geometric application and expanded annular and denominator proofs are included in full.
+\end{abstract}
+\textbf{Research status.} The theorem is proposed without conjectural hypotheses. This manuscript records the current written argument; it has not been independently refereed or fully verified in Lean. Compilation of this PDF and success of the finite certificates are not substitutes for those forms of mathematical verification.
+\clearpage
+\tableofcontents
+\clearpage
+\hypertarget{overview-and-precise-theorem}{%
+\section{Overview and precise theorem}\label{overview-and-precise-theorem}}
+
+Fix the Kubota-Leopoldt branch by \[
+\zeta_7(3)=\lim_{\nu\to\infty}(1-7^{w_\nu-1})\zeta(1-w_\nu),
+\qquad w_\nu=6\cdot7^\nu-2,\quad \nu\ge1,
+\qquad \eta=\zeta_7(3)/2.
+\] The proposed conclusion is \(\zeta_7(3)\notin\mathbb Q\). The limit and the precise specialization are justified in Appendix R.
+
+The argument supposes temporarily that \(\eta\) is rational and constructs one sequence of nonzero rational determinants \(D_d\). Its valuation at seven is too large to be compatible with the bounds at all other primes and at the complex absolute value. The contradiction uses the rational product formula. Rationality is the supposition contradicted, not a hypothesis of the theorem.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Step
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Quantitative conclusion
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Proof location
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Genuine analytic continuation & \(H\) has coefficient decay at every radius below \(49\) & Appendix R; Section 1.2 treats all six germs \\
+N: the same nonzero determinant & \(j\le\lambda_j\le j+176\) & Section 2 \\
+A: seven-adic saving & \(\liminf v_7(D_d)/d^2\ge43\) & Section 3 and Appendix A \\
+P: other-prime cost & \(\liminf d^{-2}\sum_{p\ne7}v_p(D_d)\log p\ge-12325/168\) & Section 4 and Appendix A \\
+C: complex bound & \(\limsup d^{-2}\log|D_d|\le J-7I/2\) & Section 5 \\
+Exact positive margin & \(0.03568<43\log7+7I/2-J-12325/168<0.03569\) & Section 6; separate certificates \\
+\end{longtable}
+
+The proofs of the new estimates are given here. Published geometric theorems supply the stated geometric inputs with their hypotheses checked in Appendix R. The finite certificates establish the specified algebraic identities and numerical enclosure; they do not certify the whole infinite argument.
+
+\textbf{Notation and numbering.} Sections 1-6 retain the numbering of the determinant proof, including equations (1)-(50). Appendix R has its own lemma numbering and equations (R1)-(R19). Appendix A expands the annular algebra, normalization, source completion, and simultaneous denominator construction. References to R1-R6 inside Appendix R denote its external-input labels; equation references there use parentheses. The separate audit collection preserves the original reports and their historical status statements.
+
+\hypertarget{definitions-and-inputs}{%
+\subsection{1. Definitions and inputs}\label{definitions-and-inputs}}
+
+Normalize \(v_p(p)=1\), \(|p|_p=p^{-1}\), and put \(v_p(0)=+∞\). All logarithms below are natural. Write
+
+\[
+x(q)=q\prod_{7\nmid m}(1-q^m)^{-4},\qquad
+A(q)=q\frac{d}{dq}\log x(q),\qquad
+G(q)=\sum_{7\nmid a}\frac{q^a}{a^3(1-q^a)}.
+\]
+
+Let \(q(x)=x+O(x^{2})\) be the compositional inverse, and set
+
+\[
+B(x)=A(q(x)),\quad F(x)=B(x)G(q(x)),\quad H(x)=F(x)+cB(x).
+\]
+
+The coefficients of \(x(q)/q\), \(q(x)/x\), \(B\), and \(B^{-1}\) are integers. For the inverse series, the coefficient at each new degree is determined with multiplier one; for the multiplicative inverses the constant coefficient is one. These recursions prove the integrality assertions.
+
+Define
+
+\[
+\begin{aligned}
+P&=1+13x+49x^2,&N&=1+245x+2401x^2,\\
+T&=1-490x-21609x^2-235298x^3-823543x^4,\\
+V&=8x(1+16x+49x^2)/P^2,&R&=x(1+10x)/P.
+\end{aligned}
+\]
+
+Write \(D=x d/dx\), and let
+
+\[
+L=D^3-VD-\tfrac12(DV),\qquad
+K=HD^2H-\tfrac12(DH)^2-\tfrac12VH^2.
+\]
+
+The last term in \(L\) is multiplication. Define ordinary primitives by \(J_{1}'=K\), \(J_{2}'=J_{1}\), with both constant coefficients zero. The six non-polynomial blocks are
+
+\[
+g=(H,DH,D^2H,K,J_1,J_2),\qquad g_0=1.
+\]
+
+\hypertarget{the-modular-and-differential-identities}{%
+\subsubsection{1.1 The modular and differential identities}\label{the-modular-and-differential-identities}}
+
+The identities needed below are
+
+\[
+\begin{gathered}
+j=PN^3/x,\quad PN^3-T^2=1728x,\quad
+x(-1/(7\tau))=1/(49x(\tau)),\\
+E_4/A^2=N/P,\quad E_4(7\tau)/A^2=(1+5x+x^2)/P,\quad E_6/A^3=T/P^2.
+\end{gathered}\tag{1}
+\] \[
+2Du+u^2=V,\quad u=DB/B,\quad
+L(BY)=B^{-2}\theta^3Y,\quad \theta=q\,d/dq=BD.\tag{2}
+\] \[
+\begin{gathered}
+LB=0,\quad LH=R,\quad DK=RH,\\
+K(x(q))=(G+c)\theta^2G-\tfrac12(\theta G)^2.
+\end{gathered}\tag{3}
+\]
+
+Here is a finite-dimensional justification of (1), so that the finite coefficient checks have a valid scope. The eta quotient with exponents \((-4,4)\) at levels \((1,7)\) has weight zero, congruence sums \(24\) and \(-24\), and trivial character. Its orders at the two cusps are \(1\) and \(-1\), and it has no interior zero or pole. It is therefore a degree-one coordinate on the compact curve \(X_{0}(7)\). The eta-quotient criterion and transformation formula used here are stated in \href{https://arxiv.org/pdf/2507.16225}{Savitt, Theorem 1.1 and Section 2}.
+
+The function \(xj\) has only a pole of order eight at the other cusp. It is consequently a polynomial of degree at most eight in \(x\). Its coefficients through degree eight identify it as \(PN^{3}\). The zeros of \(P\) are the two order-three elliptic points. At each, an upstairs parameter \(z\) has \(x-α=z^{3}\) times a unit; hence \(A=θ \operatorname{log} x\) has order two there. There are no other interior zeros of \(A\), and its cusp values in the weight-two trivializations are nonzero. Thus, for a holomorphic modular form \(E\) of weight \(2a\), the function \(E/A^a\) is bounded at the cusps and has poles only at \(P=0\), of order at most \(\operatorname{floor}(2a/3)\). Multiplication by that power of \(P\) gives a polynomial of degree at most twice that power. The three quotient identities in (1) are therefore determined by three, three and five coefficients, respectively. The enclosed \path{numerical_certificate.py} verifies these finite comparisons, as well as \(xj\), exactly over the integers.
+
+For completeness, put \(a_{0}=N/P\) and \(s_{0}=3D \operatorname{log} a_{0}+T/(PN)\). The two Ramanujan identities give
+
+\[
+E_2/A=6u+s_0,\qquad
+2Du+u^2=(s_0^2-a_0)/36-(Ds_0)/3=V.
+\]
+
+The last equality is rational algebra, independently checked in \path{exact_checks.py}. The Ramanujan identities in this normalization are recorded in \href{https://arxiv.org/pdf/1612.05081}{Fonseca, Introduction}. Expanding derivatives using \(θ=BD\) proves (2). Finally,
+
+\[
+\theta^3G=(E_4(\tau)-E_4(7\tau))/240;
+\]
+
+this follows by grouping the divisors in the defining sum. It proves \(LH=R\); differentiating the definition of \(K\) proves the remaining identities in (3). In particular all six blocks are affine in \(c\).
+
+\hypertarget{the-analytic-input-and-the-six-germs}{%
+\subsubsection{1.2 The analytic input and the six germs}\label{the-analytic-input-and-the-six-germs}}
+
+For the application put
+
+\[
+c=\eta=\frac12\lim_{\nu\to\infty}(1-7^{w_\nu-1})\zeta(1-w_\nu),
+\qquad w_\nu=6\cdot7^\nu-2.
+\]
+
+The radius proof in Appendix R applies to exactly \(H=B(G(q(x))+η)\). Its published inputs are \href{https://www.math.uchicago.edu/~fcale/papers/Beukers.pdf}{Calegari, Theorem 2.3 and Lemma 2.4}, \href{https://www.ma.imperial.ac.uk/~buzzard/maths/research/papers/wild6.pdf}{Buzzard, Theorem 5.2(2)}, and the ordinary-disc identification in \href{https://arxiv.org/html/math/0701168v3\#S2}{Loeffler, Theorem 1}, together with the specified finite-map and affinoid facts. The detailed radius proof checks the character \(a↦a^{-2}\), eigenvalue \(1\), auxiliary tame level \(5\), the exact domain, and the trace's complete Taylor series. In particular it does not assume an invertible \(A\) on the whole domain or replace the weight by zero before multiplying by \(A\).
+
+Its conclusion is analyticity of \(H\) on \(|x|_{7}<49\). This also gives the required analyticity of \textbf{all six} blocks, as follows. The roots of \(P\) have norms \(1\) and \(49\): one is a simple Hensel lift of \(1 mod 7\), and their product is \(1/49\). At the inner root \(α\),
+
+\[
+V=-\frac{8\alpha^2}{9(x-\alpha)^2}+O((x-\alpha)^{-1}).
+\]
+
+The polynomially cleared identity \(LH=R\) holds throughout the disc, since it holds on a cusp neighbourhood. If \(H(α)≠0\), the term \(-(DV)H/2\) has a nonzero triple pole; the other terms have at most double poles, and \(R\) has at most a simple pole. This is impossible. Thus \(H(α)=0\), and \(VH^{2}\) has a removable singularity. Hence \(K\), as well as \(H,DH,D^{2}H\), is analytic on the disc. Dividing the coefficients of \(K\) by \(n\) or \(n(n-1)\) costs at most \(O(\operatorname{log} n)\) in 7-adic valuation; it leaves the open radius unchanged for \(J_{1},J_{2}\).
+
+Set \(t=49x\) and \(\widehat{g}_j(t)=g_j(t/49)\). Consequently, for every \textbf{fixed} \(ε>0\) there exists \(B_ε≥0\) such that
+
+\[
+v_7([t^n]\widehat g_j)\ge-\epsilon n-B_\epsilon
+\quad(n\ge0,\;1\le j\le6).\tag{4}
+\]
+
+Indeed choose a closed radius \(7^{-a}<1\) with \(0<a<ε\) and bound each of the six Gauss norms there. Taking the maximum of six constants proves (4), including zero coefficients under the stated valuation convention. This is the only analytic input about the target used in A.
+
+\hypertarget{n-independence-the-zero-bound-and-the-selected-determinant}{%
+\subsection{2. N: independence, the zero bound, and the selected determinant}\label{n-independence-the-zero-bound-and-the-selected-determinant}}
+
+\hypertarget{n1.-a-rational-inhomogeneous-solution-is-impossible}{%
+\subsubsection{N1. A rational inhomogeneous solution is impossible}\label{n1.-a-rational-inhomogeneous-solution-is-impossible}}
+
+There is no pair \(v∈\mathbb{C}(x)\) and nonzero \(h∈\mathbb{C}[x]\), \(\operatorname{deg} h≤2\), with \(Lv=hR\).
+
+At an ordinary finite point other than zero, the third derivative of a pole would have strictly highest pole order, and cannot cancel. At zero the lowest Laurent term of a pole gives the nonzero coefficient \(n^{3}\), for an integer \(n<0\). At a root \(α\) of \(P\) the indicial polynomial, after removal of the nonzero factor \(α^{3}\), is
+
+\[
+m(m-1)(m-2)+8m/9-8/9
+=(m-1)(m-2/3)(m-4/3).
+\]
+
+It has no negative integer root. Thus \(v\) has no finite poles. A nonzero value \(v(α)\) would yield a triple pole in \(Lv\), although \(hR\) has at most a simple pole, so \(P\) divides the polynomial \(v\). At infinity, \(V=O(x^{-1})\) and \(R=O(1)\); for a polynomial of positive degree \(m\), the leading term of \(Lv\) is \(m^{3}\) times its leading term. Hence \(\operatorname{deg} v≤2\), and \(v=λP\). Direct division gives
+
+\[
+\frac{LP}{R}=
+\frac{9+433x+5145x^2+19208x^3}{1+10x}.
+\]
+
+The numerator at \(-1/10\) is \(-1029/500\), so this is not a polynomial. Both possibilities \(λ≠0\) and \(λ=0\) contradict the proposed equation. This proves N1.
+
+\hypertarget{n2.-irreducibility-of-the-homogeneous-module}{%
+\subsubsection{N2. Irreducibility of the homogeneous module}\label{n2.-irreducibility-of-the-homogeneous-module}}
+
+On a simply connected regular neighbourhood, (2) identifies the solutions of \(Lf=0\) with
+
+\[
+B\langle1,\tau,\tau^2\rangle.
+\]
+
+Continuation along a modular loop acts on this space by the symmetric square of the standard representation of \(Γ_{0}(7)\). The group elements are realized by paths in the upper half-plane avoiding the discrete preimages of the singular points; projection gives the required loops. The action on \(Bτ^m\) follows directly from \(B(γτ)=(cτ+d)^{2}B(τ)\) and \(γτ=(aτ+b)/(cτ+d)\).
+
+The group contains the upper unipotent with entry \(1\) and the lower unipotent with entry \(7\). A subspace invariant under either unipotent is invariant under its logarithm, since that logarithm is a polynomial in the unipotent minus the identity. Their logarithms act, up to nonzero scalars, as the raising and lowering operators on the degree-two homogeneous polynomials. Their commutator has three distinct weights. A nonzero invariant subspace therefore contains a weight vector and, by the raising and lowering operators, all three weight vectors. This proves irreducibility.
+
+A rational differential submodule would give an invariant subspace of local horizontal solutions (or its dual) by solving the restricted local linear system, and this subspace is preserved by continuation. Thus the rank-three rational differential module is irreducible as well.
+
+\hypertarget{n3.-the-seven-actual-germs-are-independent}{%
+\subsubsection{N3. The seven actual germs are independent}\label{n3.-the-seven-actual-germs-are-independent}}
+
+First form an abstract rank-four module with basis \(e_{0},e_{1},e_{2},e_{3}\) and
+
+\[
+De_0=0,\quad De_1=e_2,\quad De_2=e_3,\quad
+De_3=Re_0+\tfrac12(DV)e_1+Ve_2.
+\]
+
+Its quotient by \(\mathbb{C}(x)e_{0}\) is irreducible by N2. A splitting would send the class of \(e_{1}\) to \(e_{1}-ve_{0}\), whose \(L\)-image is zero, so \(Lv=R\); N1 excludes this. Hence the only nonzero proper differential submodule is the line \(\mathbb{C}(x)e_{0}\). The map to \(1,H,DH,D^{2}H\) cannot have that line in its kernel, and is injective. Call this four-dimensional space \(W_{4}\).
+
+Use the primitive frame
+
+\[
+U_0=K,\quad U_1=J_1-xK,\quad
+U_2=J_2-xJ_1+x^2K/2.
+\]
+
+Their Euler derivatives are \(RH,-xRH,x^{2}RH/2\). The quotient of the abstract seven-dimensional extension by \(W_{4}\) is a trivial differential module. For a nonzero constant vector \(a\), put \(U_a=\sum a_iU_i\) and \(h_a=a_{0}-a_{1}x+a_{2}x^{2}/2\). If
+
+\[
+D(U_a+AH+B_1DH+CD^2H)
+\]
+
+lay in the rational line, comparison of the three independent jet coefficients would give
+
+\[
+B_1=-DC,\quad A=D^2C-VC,\quad LC=-h_aR.
+\]
+
+N1 excludes this correction. A submodule of a trivial module over \(\mathbb{C}(x)\) has a constant basis: differentiate a rational reduced row-echelon basis; all its pivot entries differentiate to zero, so each derivative, still in the subspace, is zero. If the map of the seven abstract basis vectors to the germs had a nonzero kernel, its intersection with \(W_{4}\) would be zero. A lift of a nonzero constant primitive vector in its projected kernel would then have derivative zero and furnish the excluded correction. The map is injective, for every \(c∈\mathbb{C}\).
+
+\hypertarget{n4.-a-uniform-zero-estimate}{%
+\subsubsection{N4. A uniform zero estimate}\label{n4.-a-uniform-zero-estimate}}
+
+Let \(\mathcal{F}=P_{0}+\sum P_jg_j\), with \(\operatorname{deg} P_j<d\), be nonzero. If it is polynomial, its order is at most \(d-1\). Otherwise its cyclic differential span contains \(W_{4}\). To verify the last assertion, intersect that span with \(W_{4}\): the intersection can only be zero, the rational line, or \(W_{4}\). If the primitive image is nonzero, a lift of a constant primitive vector has derivative in this intersection; the first two possibilities are excluded by N3. If the primitive image is zero, the non-polynomial element of \(W_{4}\) generates all of \(W_{4}\) by the same submodule classification.
+
+The primitive coordinate vector of \(\mathcal{F}\) in the \(U\)-frame is
+
+\[
+(P_4+xP_5+x^2P_6/2,\ P_5+xP_6,\ P_6).
+\]
+
+It has degree at most \(d+1\). Polynomials in the Euler operator isolate its distinct monomial coefficient vectors: use interpolation polynomials equal to one at one exponent and zero at the other occurring exponents. Thus its differential span has a constant basis \(a_{1},\ldots ,a_r\), with \(r≤3\). A frame for the full cyclic span is
+
+\[
+1,H,DH,D^2H,U_{a_1},\ldots,U_{a_r},\qquad n=4+r\le7.
+\]
+
+In this frame the connection is regular at zero. Clearing it by \(P^{3}\) gives polynomial entries of degree at most eight: the only entries to check are constants, \(R\), \(V\), \((DV)/2\), and \(h_aR\) for a quadratic \(h_a\). If the coordinates of \(P^{3k}D^k\mathcal{F}\) have degree at most \(d+1+8k\), differentiation followed by clearing the next row preserves this bound with \(k\) replaced by \(k+1\). The new terms are the derivative of the numerator, the logarithmic derivative of \(P^{3k}\), and multiplication by the cleared connection; their degree increases are at most six, six, and eight.
+
+The first \(n\) derivative rows are independent. Otherwise the first dependence expresses a new row through its predecessors; differentiation then keeps all later rows in the same span, contradicting cyclic rank \(n\). Their cleared determinant \(Δ\) is a nonzero polynomial with
+
+\[
+\deg\Delta\le n(d+1)+8\sum_{k=0}^{n-1}k
+=n(d+1)+4n(n-1)\le7d+175.
+\]
+
+Replace the column for the frame vector \(1\) by the linear combination of all columns using the actual frame germs as coefficients. Its coefficient on the replaced column is one; the determinant is unchanged. The new column has entries \(P^{3k}D^k\mathcal{F}\). Each has order at least \(ord_{0}\mathcal{F}\), whereas all other columns are regular at zero. Expansion in that column proves
+
+\[
+\operatorname{ord}_0\mathcal F\le\operatorname{ord}_0\Delta\le7d+175.\tag{N}
+\]
+
+\hypertarget{n5.-jumps-base-fields-and-the-determinant}{%
+\subsubsection{N5. Jumps, base fields, and the determinant}\label{n5.-jumps-base-fields-and-the-determinant}}
+
+The injective seven-block map has dimension \(7d\). Successive leading coefficients give a complete vanishing flag with distinct jumps \(λ_{0}<\cdots <λ_{7d-1}\). By (N), the last jump is at most \(7d+175\), and distinctness gives
+
+\[
+j\le\lambda_j\le(7d+175)-(7d-1-j)=j+176.
+\]
+
+The polynomial block realizes every order below \(d\), so the first \(d\) jumps are exactly \(0,\ldots ,d-1\). The selected coefficient matrix in the original monomial source has nonzero determinant \(D_d(c)\). Removing the polynomial identity block leaves the square matrix
+
+\[
+M_{r,(j,k)}=[x^{r-k}]g_j,
+\quad r\in I_d=\{\lambda_d,\ldots,\lambda_{7d-1}\},
+\quad1\le j\le6,\quad0\le k<d.\tag{5}
+\]
+
+For transfer to a possibly irrational \(c∈\mathbb{Q}_{7}\), take the finite matrix through row \(7d+175\). Its entries are in \(\mathbb{Q}[c]\). Its maximal minors have no common complex zero by the result for every complex \(c\); their gcd in \(\mathbb{Q}[c]\) is therefore one. A polynomial Bezout identity among them remains one after evaluation at any \(c∈\mathbb{Q}_{7}\). Thus the same injectivity and zero bound hold there. For rational \(c\), ranks and jumps agree under extension from \(\mathbb{Q}\) to either \(\mathbb{C}\) or \(\mathbb{Q}_{7}\), so (5) defines the same nonzero rational determinant at every place.
+
+\hypertarget{a-the-annular-saving-including-source-index}{%
+\subsection{3. A: the annular saving, including source index}\label{a-the-annular-saving-including-source-index}}
+
+This section uses the actual parameter and (4). All radii and error parameters are fixed before \(d\) tends to infinity.
+
+\hypertarget{a1.-a-homogeneous-solution-on-the-whole-open-annulus}{%
+\subsubsection{A1. A homogeneous solution on the whole open annulus}\label{a1.-a-homogeneous-solution-on-the-whole-open-annulus}}
+
+In the variable \(y\) put
+
+\[
+s=\frac{T^2}{PN^3},\quad
+\mathcal A(s)={}_2F_1(1/12,5/12;1/2;s),\quad
+\mathcal C(s)={}_2F_1(7/12,11/12;3/2;s).
+\]
+
+For the coefficient \(u_n\) of either series, \(n≥1\),
+
+\[
+v_7(u_n)\ge-\lfloor\log_7(12n)\rfloor.\tag{6}
+\]
+
+Indeed the numerator consists of two arithmetic progressions with step twelve and length \(n\). At each power \(7^j\) each has at least \(\operatorname{floor}(n/7^j)\) divisible terms. The denominator has the valuation of \((2n)!\) or \((2n+1)!\); at that power it contributes at most \(2 \operatorname{floor}(n/7^j)+1\). All integers occurring are at most \(12n\). Summing the possible deficits proves (6). Also \(v_{7}(u_n)≥-n/3\): discard numerator valuations and use \(v_{7}((2n+ι)!)≤n/3\), which follows from the base-seven digit formula for factorial valuation (\(s_{7}(2n+1)≥1\) in the odd case).
+
+For \(0<β<2\), use the Laurent Gauss valuation on \(|y|_{7}=7^β\). Set
+
+\[
+\tau_\beta=\min(0,7-4\beta),\qquad
+m_\beta=\min(\beta,14-7\beta)>0.
+\]
+
+The valuations of \(P,N,T,s\) are \(-β,0,τ_β,m_β\). Comparing all terms of the displayed polynomials proves this; Gauss norms have no cancellation between different monomials. For \(J=\operatorname{floor}(log_{7}(12n))\), \(J^{2}≤7^J≤12n\), so
+
+\[
+m_\beta n-J\ge m_\beta n-\sqrt{12n}\ge-3/m_\beta.
+\]
+
+Moreover (6) makes this expression tend to infinity. Both hypergeometric series converge on each smaller closed annulus, with valuation at least \(-3/m_β\). The functions \(P,N\) have no zeros on \(1<|y|_{7}<49\) (for \(P\) compare its three terms; for \(N\), the constant term strictly dominates). Thus
+
+\[
+b(y)=\frac{T(y)}{N(y)^2}\mathcal A(s(y))\mathcal C(s(y))\tag{7}
+\]
+
+is an analytic function on that entire annulus. At \(β=1\), \(v_β(s)=1\); the bound \(v_{7}(u_n)≥-n/3\) makes every nonconstant term have strictly positive valuation. The two hypergeometric factors are Gauss units, and \(T/N^{2}\) has valuation zero. Therefore \(b\) is not the zero function.
+
+To prove \(Lb=0\), coefficient recursion in the hypergeometric series proves its differential equation
+
+\[
+f''+\frac{1-3s}{2s(1-s)}f'-\frac{5}{144s(1-s)}f=0;
+\]
+
+the two solutions used are \(\mathcal{A}(s)\) and \(\surd s \mathcal{C}(s)\). Write
+
+\[
+w=\tfrac12(D\log P-D\log N),\qquad
+v_d=\frac{5(Ds)^2}{144s(1-s)}.
+\]
+
+Exact rational identities give
+
+\[
+\frac{D^2s}{Ds}-\frac{1-3s}{2s(1-s)}Ds=-w,
+\qquad w^2+2Dw+4v_d=V.\tag{8}
+\]
+
+After the change of variable, each solution satisfies \(D^{2}f=-wDf+v_df\). Adjoin \(g\) with \(g^{4}=P/N\) to the Laurent algebra; this is a free algebra in which \(g\) is a unit and \(Dg=(w/2)g\). Put \(z=T/(N^{2}g^{2})\), so \(z^{2}=s\). After localizing at \(T\), the rational identities and the hypergeometric coefficient recursions show that \(g\mathcal{A}(s)\) and \(gz\mathcal{C}(s)\) solve \(D^{2}u=(V/4)u\). The product of two solutions of this equation satisfies \(L(u_{1}u_{2})=0\) by direct differentiation. Their product is precisely (7), since \(g^{2}z=T/N^{2}\). Clear powers of \(T\) and cancel them: the Laurent algebra is a domain, and the adjoined algebra is free over it. Appendix A, Section A1 proves these algebra properties, the convergent-series operations, and the cancellation argument, including how to use (8) without dividing by \(Ds\). The identities (8) are checked as rational identities in \path{exact_checks.py}; no global analytic choice of a radical is assumed.
+
+\hypertarget{a2.-splitting-and-finite-forcing}{%
+\subsubsection{A2. Splitting and finite forcing}\label{a2.-splitting-and-finite-forcing}}
+
+Put \(a=b/P\) and split its Laurent expansion into \(a_{+}\) with exponents at least \(-2\) and \(a_{-}\) with exponents at most \(-3\). Thus \(a_{+}\) is meromorphic on \(|y|<49\), with pole order at most two at zero, and \(a_{-}\) is analytic on \(|y|>1\) and at infinity. Set \(\mathcal{S}(a)=P L(Pa)\). A differentiation valid for every integer \(n\) gives
+
+\[
+\mathcal S(y^n)=y^n\sum_{j=0}^4\beta_j(n)y^j,\tag{9}
+\]
+
+where
+
+\[
+\begin{aligned}
+\beta_0(n)&=n^3,\\
+\beta_1(n)&=(2n+1)(13n^2+13n+9),\\
+\beta_2(n)&=(n+1)(267n^2+534n+433),\\
+\beta_3(n)&=49(2n+3)(13n^2+39n+35),\\
+\beta_4(n)&=2401(n+2)^3.
+\end{aligned}
+\]
+
+Because \(\mathcal{S}(a)=0\), the common function \(r=\mathcal{S}(a_{+})=-\mathcal{S}(a_{-})\) has support in \([-2,1]\). Also
+
+\[
+r_0=\mathcal S(y^{-2})=-8y^{-2}-105y^{-1}-433-441y,
+\qquad r_0(-10/49)=-1029/50\ne0.
+\]
+
+Choose \(γ=r(-10/49)/r_{0}(-10/49)\), set \(a*=a_{+}-γy^{-2}\), and \(v*=Pa*\). These evaluations concern finite Laurent polynomials, so do not require evaluating \(b\) on the boundary of its annulus. The polynomial \(y^{2}\mathcal{S}(a*)\) has degree at most three and vanishes at \(-10/49\). It follows by polynomial division that, for a polynomial \(h\) of degree at most two,
+
+\[
+L_yv^*=-h(1/y)\frac{10+49y}{49P(y)}.\tag{10}
+\]
+
+\hypertarget{a3.-the-forcing-polynomial-is-nonzero}{%
+\subsubsection{A3. The forcing polynomial is nonzero}\label{a3.-the-forcing-polynomial-is-nonzero}}
+
+Reducing \(E_{6}/B^{3}=T/P^{2}\) modulo seven gives \(\overline{B}^{3}=(1-y)^{2}\). The unique cube root with constant coefficient one is
+
+\[
+\overline B=(1-y)^3\prod_{j\ge1}(1-y^{7^j})^2.\tag{11}
+\]
+
+Cubing and applying Frobenius verifies this identity, and recursion with unit multiplier three gives uniqueness. At degree \(7^j\), \(j≥1\), the coefficient is \(-2\): the product of all preceding factors has degree \((7^j+2)/3<7^j\), and the next factor contributes exactly \(-2y^{7^j}\). Since \(B\) is integral, (11) proves that its convergence radius is exactly one.
+
+Suppose \(h=0\). The indicial coefficient \(n^{3}\) at zero excludes a pole of \(v*\). Recursion in \(Lv*=0\) then makes its Taylor series a constant multiple of \(B\). Since \(v*\) is analytic on \(|y|<49\) whereas \(B\) has radius one, this multiple must be zero. Therefore \(b=P(a_{-}+γy^{-2})\) extends analytically to all \(|y|>1\) and to infinity. The exact identity \(V(y)=V(1/(49y))\) implies, under the change \(z=1/(49y)\), that \(L_y\) becomes \(-L_z\). Uniqueness of the analytic homogeneous solution at infinity gives
+
+\[
+b(y)=\lambda B(1/(49y))
+\]
+
+near infinity, with \(λ≠0\) because \(b≠0\). By (11) this Laurent series has inner convergence radius exactly \(49\); it cannot be the Laurent series of a function analytic on every \(|y|>1\). Uniqueness of Laurent expansions gives a contradiction. Thus \(h≠0\).
+
+For later bounds, the preceding Gauss estimates give, for \(n≥1\),
+
+\[
+v_7([y^n]v^*)\ge\beta n-C_\beta,
+\qquad C_\beta=6/m_\beta-\tau_\beta\ge0.\tag{12}
+\]
+
+Indeed \(v_β(a)≥β+τ_β-6/m_β\). In multiplying its retained Laurent tail, including exponents \(-2,-1\), by \(P\), the three possible additional offsets are \(β,0,2-β\), all nonnegative. This includes the index \(n=1\). The correction \(γPy^{-2}\) has no positive coefficients, so it does not change this bound.
+
+\hypertarget{a4.-an-actual-laurent-relation-for-the-target}{%
+\subsubsection{A4. An actual Laurent relation for the target}\label{a4.-an-actual-laurent-relation-for-the-target}}
+
+Put \(y=1/t\), \(v(t)=v*(1/t)\), and \(Q=49+13t+t^{2}\). Then \(P(t/49)=Q/49\), \(P(1/t)=Q/t^{2}\), and (10) gives
+
+\[
+\widehat L v=h\widehat R,
+\quad \widehat R=\frac{t(49+10t)}{49Q},
+\quad \widehat V=\frac{8t(49+16t+t^2)}{Q^2}.
+\]
+
+Use \(\mathcal{H}=H(t/49)\), \(\mathcal{K}=K(t/49)\), \(\mathcal{J}_{1}=49J_{1}(t/49)\), and \(\mathcal{J}_{2}=49^{2}J_{2}(t/49)\), so \(\mathcal{J}_{1}'=\mathcal{K}\), \(\mathcal{J}_{2}'=\mathcal{J}_{1}\). For a quadratic \(h\), define
+
+\[
+Z_h=h\mathcal K-h'\mathcal J_1+h''\mathcal J_2,
+\qquad
+S(v,\mathcal H)=vD^2\mathcal H-(Dv)D\mathcal H+(D^2v-\widehat Vv)\mathcal H.
+\]
+
+Differentiation, using the equations for both \(v\) and \(\mathcal{H}\), gives
+
+\[
+D(Z_h-S(v,\mathcal H))=-v\widehat R.\tag{13}
+\]
+
+This is an identity between already constructed analytic functions on \(1/49<|t|<1\); it does not postulate an Euler primitive. In the variable \(y\), \(v*\widehat{R}=(10+49y)a*/49\), which has no exponent below \(-2\). Therefore the right side of (13) has no positive \(t\)-power above two. For a positive integer index differentiation multiplies by that nonzero integer, so the positive part of \(Z_h-S\) has degree at most two. Multiplication by \(Q^{2}\) gives the relation
+
+\[
+\sum_{j=1}^6 A_j\widehat g_j=\Psi,\tag{14}
+\]
+
+with positive parts of degree at most six, where
+
+\[
+\begin{aligned}
+A_1&=-Q^2D^2v+8t(49+16t+t^2)v,&A_2&=Q^2Dv,\\
+A_3&=-Q^2v,&A_4&=Q^2h,\\
+A_5&=-49Q^2h',&A_6&=49^2Q^2h''.
+\end{aligned}
+\]
+
+The negative coefficient of \(A_j\) at \(-n\), \(n≥1\), has valuation at least \(βn-C_β\). The multipliers have integral coefficients and nonnegative exponents, and the Euler derivative multiplies by an integer, so (12) proves this assertion term by term. In fact we may explicitly choose \(C=4\) so that every coefficient of every \(7^C A_j\) is integral. At \(β=1\), the two hypergeometric factors and \(T/N^{2}\) are Gauss units, giving \(v_{1}(a)=1\), hence \(v_{7}(a_n)≥n+1\) at every integer index. The four coefficients of \(r\) at \(-2,-1,0,1\) have lower bounds \(-1,0,-1,1\). Evaluation at \(-10/49\) and \(v_{7}(r_{0}(-10/49))=3\) give \(v_{7}(γ)≥-4\). The forcing identity then gives bounds \(-2,-4,-2\) for \(h_{0},h_{1},h_{2}\), and every coefficient of \(v\) has valuation at least \(-4\). The displayed integral polynomial multipliers and integer derivatives preserve that bound. Appendix A, Section A3 gives each coefficient calculation explicitly. The normalization is fixed independently of \(d\).
+
+\hypertarget{a5.-integral-columns-explicit-completion-and-the-determinant-bound}{%
+\subsubsection{A5. Integral columns, explicit completion, and the determinant bound}\label{a5.-integral-columns-explicit-completion-and-the-determinant-bound}}
+
+Let \(d≥7\), \(k=d-6\), and for \(m=0,\ldots ,d-7\) use the actual polynomial source column
+
+\[
+u_{m,j}=7^C t^m\sum_{n=-m}^{6}[t^n]A_j\,t^n.
+\]
+
+Its degree is below \(d\) and its coefficients are integral. At every selected row \(r≥d\), (14) has no surviving coefficient from \(t^mΨ\). Consequently
+
+\[
+(\widehat M u_m)_r
+=-7^C\sum_{j=1}^6\sum_{\ell\ge1}
+[t^{-m-\ell}]A_j\,[t^{r+\ell}]\widehat g_j.\tag{15}
+\]
+
+Choose fixed \(0<ε<β\). The summands tend to zero in norm by (4) and (12), so (15) is a convergent identity. Since \(r≤7d+175\), it implies
+
+\[
+v_7((\widehat M u_m)_r)
+\ge\beta m-7\epsilon d-(175\epsilon+B_\epsilon+C_\beta).\tag{16}
+\]
+
+The unmodified matrix entries have valuation at least
+
+\[
+-7\epsilon d-(175\epsilon+B_\epsilon).\tag{17}
+\]
+
+Here the normalized entries are exactly \([t^{r-k}]\widehat{g}_j=49^{k-r}M_{r,(j,k)}\).
+
+The \(K\)-block of these columns is \(7^C t^mQ^{2}h\). Because \(h≠0\), write \(7^CQ^{2}h=7^a p_{0}(t)\) with fixed \(a≥0\) and \(p_{0}∈\mathbb{Z}_{7}[t]\) having at least one unit coefficient. Let \(ℓ≤6\) be its smallest unit-coefficient index. Choose the \(k\) rows in the \(K\)-block with degrees \(ℓ,\ldots ,ℓ+k-1\), all below \(d\). After dividing each of the \(k\) columns by \(7^a\), this minor is lower triangular modulo seven: the diagonal coefficient is \([t^ℓ]p_{0}\), and the entries above it have indices below \(ℓ\). Its determinant is therefore a unit, so the original minor has valuation \(ak\).
+
+Append the standard coordinate vectors corresponding to every other source coordinate row to the \textbf{original} columns \(u_m\). After ordering the chosen rows first, the completed matrix is block triangular with this minor and an identity matrix as diagonal blocks. Consequently
+
+\[
+v_7(\det U')=ak.\tag{18}
+\]
+
+This is an explicit integral completion, generally not unimodular. The first \(k\) columns remain the original columns with their individually known bounds (16). Its exact index cost \(ak\) is subtracted in the next step; no source index is silently discarded.
+
+Using (16) for these columns and (17) for the appended columns, expansion of the determinant gives
+
+\[
+v_7(\det\widehat M)
+\ge(\beta/2-42\epsilon)d^2-K_{\beta,\epsilon}d,\tag{19}
+\]
+
+where one permissible fixed constant is
+
+\[
+K_{\beta,\epsilon}
+=13\beta/2+6(175\epsilon+B_\epsilon)+C_\beta+a.
+\]
+
+Indeed \(\sum _{m=0}^{k-1}m=k(k-1)/2=(d^{2}-13d+42)/2\); the \(6d\) column bounds contribute \(-42εd^{2}\); the extra \(C_β\) and source-index costs are at most \(k(C_β+a)\). The discarded constant is nonnegative.
+
+Finally
+
+\[
+v_7(D_d)=2\sum_{r\in I_d}r-12\sum_{i=0}^{d-1}i+v_7(\det\widehat M).
+\]
+
+Write the selected rows as \(d+i+e_i\), with \(0≤e_i≤176\). Their coordinate contribution is exactly \(42d^{2}+2\sum e_i\), at least \(42d^{2}\). For any \(0<δ<1\) choose the \textbf{fixed} values \(β=2-δ\) and \(ε=δ/84\). Equation (19) gives
+
+\[
+v_7(D_d)\ge(43-\delta)d^2-K_\delta d.\tag{A}
+\]
+
+This proves A. The \(42d^{2}\) coordinate contribution and the annular image valuations have been counted separately, and the non-unimodular source cost has been subtracted.
+
+\hypertarget{p-the-auxiliary-prime-denominator-estimate}{%
+\subsection{4. P: the auxiliary-prime denominator estimate}\label{p-the-auxiliary-prime-denominator-estimate}}
+
+Throughout this section \(c∈\mathbb{Q}\) is fixed and \(d≥7\); only large degrees are needed for the asymptotic conclusion. The matrix is the original \(M\) in (5), with the actual selected rows. A source vector has \emph{cap e} if every coefficient of its image in the needed range has valuation at least \(-e\). We prove the estimate first for
+
+\[
+p\ge11,\qquad c\in\mathbb Z_p,\qquad
+N_d=7d+176,\qquad N_d+p<p^2.\tag{20}
+\]
+
+All congruences of series below are coefficientwise below \(x^{N_d}\); where a shift requires more coefficients, we work below \(x^{N_d+p}\). Bars on short series evaluated at \(x^p\) mean reduction of their coefficients of index below \(p\), which are integral. Condition (20) is what permits this operation and all subsequent divisions by those short indices.
+
+\hypertarget{p1.-the-hasse-polynomial-and-its-simple-roots}{%
+\subsubsection{P1. The Hasse polynomial and its simple roots}\label{p1.-the-hasse-polynomial-and-its-simple-roots}}
+
+Put \(e=(p-1)/2\), \(σ=\operatorname{floor}((p-1)/3)\). The normalized classical Eisenstein series satisfies \(E_{p-1}∈1+p\mathbb{Z}_p[[q]]\). This congruence can be justified without a general Bernoulli denominator assertion: the Bernoulli recurrence gives \(B_j∈\mathbb{Z}_p\) for \(j<p-1\), because its new denominator is \(j+1<p\). At the next step,
+
+\[
+pB_{p-1}=-\sum_{j=0}^{p-2}\binom pj B_j\equiv-1\pmod p.
+\]
+
+Thus \(v_p(B_{p-1})=-1\), and the nonconstant coefficients \(-2(p-1)σ_{p-2}(n)/B_{p-1}\) are divisible by \(p\). The modularity and Fourier normalization of these classical Eisenstein series are the same ones used in Section 1; the congruence is also recorded in \href{https://arxiv.org/pdf/math/0210401}{Edixhoven-Khare, Introduction}.
+
+By the modular pole bound in Section 1,
+
+\[
+E_{p-1}/B^e=Q_p/P^\sigma,
+\quad Q_p\in\mathbb Z_p[x],\quad Q_p(0)=1,\quad
+\deg Q_p=2\sigma,\quad
+[x^{2\sigma}]Q_p=49^\sigma(-7)^e.\tag{21}
+\]
+
+Integrality follows by multiplying its integral Taylor series by \(P^σ\). To verify the last two assertions, evaluate the quotient at the other cusp: the transformations
+
+\[
+A(-1/(7\tau))=-7\tau^2A(\tau),\qquad
+E_{p-1}(-1/(7\tau))=(7\tau)^{p-1}E_{p-1}(7\tau)
+\]
+
+make its limit \((-7)^e\), nonzero. Since \(P^σ\) has leading coefficient \(49^σ\), (21) follows, including that its leading coefficient is a \(p\)-unit.
+
+Set
+
+\[
+\Gamma=\overline Q_p^{\,2}/\overline P^{\,2\sigma}
+=\overline B^{\,1-p}.
+\]
+
+Frobenius gives \(\overline{B}(x)=Γ(x)\overline{B}(x^p)\) and \(\overline{u}=D \operatorname{log} Γ\). The polynomial \(\overline{Q}_p\) is squarefree and coprime to \(\overline{P}\). Here are the residue checks. At a root not belonging to \(P\), with multiplicity \(m\), the coefficient of the double pole in \(2D\overline{u}+\overline{u}^{2}=\overline{V}\) is proportional to \((2m)(2m-2)\); since \(0<m≤2σ<p\), one has \(m=1\). At a root \(α\) of \(P\), set \(ρ=2m-2σ\). The double-pole coefficient is instead
+
+\[
+\rho^2-2\rho=-8/9,
+\quad\text{so}\quad\rho=2/3\text{ or }4/3.
+\]
+
+For \(p=3k+1\), these give \(m≡0\) or \(2k+1=2σ+1 mod p\); for \(p=3k+2\), they give the same alternatives \(0\) and \(2k+1\). Neither lies in \(1,\ldots ,2σ\). The two roots of \(P\) are distinct modulo \(p\) because its discriminant is \(-27\), and \(Q_p(0)=1\) excludes zero. All pole computations are therefore legitimate, over an algebraic closure if necessary.
+
+\hypertarget{p2.-the-rational-homogeneous-kernel-in-characteristic-p}{%
+\subsubsection{P2. The rational homogeneous kernel in characteristic p}\label{p2.-the-rational-homogeneous-kernel-in-characteristic-p}}
+
+On Laurent expansions of rational functions over \(\mathbb{F}_p\), define
+
+\[
+\mathsf C\left(\sum a_nx^n\right)=\sum a_{pn}x^n.
+\]
+
+This operation preserves rationality: \(\mathbb{F}_p(x)\) has basis \(1,x,\ldots ,x^{p-1}\) over \(\mathbb{F}_p(x^p)\), and extraction selects the residue-zero component and applies the inverse Frobenius identification of fields. It kills \(Df\), and \(\mathcal{C}(a(x^p)f)=a(x)\mathcal{C}(f)\).
+
+For every formal unit \(v∈1+x\mathbb{F}_p[[x]]\), \(\mathcal{C}(D \operatorname{log} v)=D \operatorname{log} v\). Indeed recursively write \(v=\prod _{n≥1}(1-a_nx^n)\). The logarithmic derivative of a factor with \(p|n\) is zero; for the other factors extraction uses \(a_n^p=a_n\). The product and the coefficient computations are well-defined degree by degree.
+
+Since \(q=xv\) and \(D \operatorname{log} q=B^{-1}\), it follows that \(\mathcal{C}(\overline{B}^{-1})=\overline{B}^{-1}\). Applying extraction to \(\overline{B}^{-1}=Γ^{-1}\overline{B}(x^p)^{-1}\) gives
+
+\[
+\mathsf C(\Gamma^{-1})=1.\tag{22}
+\]
+
+The Riccati identity yields the exact factorization
+
+\[
+\overline L=(D+\overline u)D(D-\overline u).
+\]
+
+If \(\overline{L}v=0\), multiplication by \(Γ\) makes \(ΓD(D-\overline{u})v=a(x^p)\) for some rational \(a\); this uses that the constants of \(D\) in \(\mathbb{F}_p(x)\) are exactly \(\mathbb{F}_p(x^p)\). Apply extraction to \(D(D-\overline{u})v=a(x^p)Γ^{-1}\). The left side is killed and (22) makes the right side \(a\), so \(a=0\). Then \((D-\overline{u})v=b(x^p)\). Apply the same argument to \(D(v/Γ)=b(x^p)Γ^{-1}\); it gives \(b=0\). Hence
+
+\[
+\ker_{\mathbb F_p(x)}\overline L=\Gamma\mathbb F_p(x^p).\tag{23}
+\]
+
+A nonzero polynomial in this kernel has degree at least \(2p\). A pole of a function of \(x^p\) has order at least \(p\); the order-two zeros of \(Γ\) cannot cancel it, so the multiplier is polynomial. To cancel the poles at the two roots of \(P\), that multiplier must vanish with order at least \(p\) at each. Finally \(Γ\) has a finite nonzero value at infinity, so the resulting polynomial still has degree at least \(2p\).
+
+\hypertarget{p3.-the-third-and-fourth-layers-and-all-carries}{%
+\subsubsection{P3. The third and fourth layers and all carries}\label{p3.-the-third-and-fourth-layers-and-all-carries}}
+
+The exact decomposition
+
+\[
+G(q)=G^{[p]}(q)+p^{-3}G(q^p),\qquad
+G^{[p]}(q)=\sum_{7\nmid a,\ p\nmid a}\frac{q^a}{a^3(1-q^a)}\in\mathbb Z_p[[q]]\tag{24}
+\]
+
+proves cap three for \(H,DH,D^{2}H\) below degree \(p^{2}\). Formal integral substitution preserves this range. It also gives
+
+\[
+p^3H\equiv\Gamma(x)\overline F(x^p).\tag{25}
+\]
+
+To see the factor \(Γ\), the singular part is \(B(x)G(q(x)^p)\); modulo \(p\), use \(q(x)^p=q(x^p)\) and \(B(x)=ΓB(x^p)\).
+
+Insert (24) and its first two \(θ\)-derivatives in (3). The sole term with denominator layer four is
+
+\[
+G(q^p)(\theta^2G)(q^p)-\tfrac12((\theta G)(q^p))^2.
+\]
+
+Thus \(p^{4}K≡\overline{K}_{0}(x^p)\), where \(K_{0}\) denotes the series with \(c=0\); away from indices divisible by \(p\), \(K\) has cap three. Since
+
+\[
+[x^n]J_1=K_{n-1}/n,\qquad
+[x^n]J_2=K_{n-2}/(n(n-1)),
+\]
+
+both primitives have cap four: if a denominator index is divisible by \(p\), its numerator index for \(K\) is not divisible by \(p\). Zero and the first two indices are treated by the prescribed zero constants.
+
+The entire fourth layer, including the carries, is needed. In \(\mathbb{F}_p[x]\) let
+
+\[
+\mathcal A_p=x(1+10x)\overline Q_p^{\,2}P^{p-2\sigma-1}
+=\sum_{j=0}^{2p}a_jx^j.
+\]
+
+Its degree is at most \(2p\), its constant coefficient is zero, and \(RΓ=\mathcal{A}_p/P(x^p)\). With \(T_{0}\) a short-series variable, put
+
+\[
+\mathcal U=D_{T_0}^{-1}(T_0F(T_0)/P(T_0)),\quad
+\mathcal W=D_{T_0}^{-1}(T_0^2F(T_0)/P(T_0)).
+\]
+
+Both have constant coefficient zero. Their first terms are \(T_{0}^{2}/2\) and \(T_{0}^{3}/3\), and \(K_{0}=\mathcal{U}+10\mathcal{W}\) because \(DK_{0}=RF\). Define
+
+\[
+\mathcal C_1=-a_{p-1}\mathcal U-a_{2p-1}\mathcal W,
+\qquad
+\mathcal C_2=(a_{p-2}\mathcal U+a_{2p-2}\mathcal W)/2.
+\]
+
+Then, with \(T_{0}=x^p\),
+
+\[
+\begin{aligned}
+p^4K&\equiv K_0(T_0),\\
+p^4J_1&\equiv xK_0(T_0)+\mathcal C_1(T_0),\\
+p^4J_2&\equiv x^2K_0(T_0)/2+x\mathcal C_1(T_0)+\mathcal C_2(T_0).
+\end{aligned}
+\tag{26}\]
+
+Here is a direct verification of the exceptional classes. At index \(mp\), the new \(J_{1}\) coefficient is \(-[x^{mp-1}]RΓF(x^p)/m\): use \(DK=RH\) and \(mp-1≡-1 mod p\). In \(\mathcal{A}_p\) the possible contributing indices are \(p-1\) and \(2p-1\), giving \(\mathcal{C}_{1}\). For \(J_{2}\) at \(mp\), the two denominator factors and \(mp-2≡-2\) give \(+[x^{mp-2}]RΓF(x^p)/(2m)\), which gives \(\mathcal{C}_{2}\). At \(mp+1\) the carry is the one for \(J_{1}\); at \(mp+2\) its coefficient is \(K_{0}(T_{0})/2\). All other classes give zero in layer four. Every occurring nonzero \(m\) is below \(p\) by (20), so the divisions are legal. This proves (26) rather than just bounding its individual columns.
+
+\hypertarget{p4.-a-derivative-basis-with-compatible-caps}{%
+\subsubsection{P4. A derivative basis with compatible caps}\label{p4.-a-derivative-basis-with-compatible-caps}}
+
+Use the following characteristic-zero rational functions, not arbitrary lifts of their reductions:
+
+\[
+r=-e^{-1}D\log(Q_p/P^\sigma),\quad
+\xi=(u-r)/p\in\mathbb Z_p[[x]],\quad v_0=(V+r^2)/2.
+\]
+
+Integrality follows from \(u-r=e^{-1}D \operatorname{log} E_{p-1}\) and its Hasse congruence. Set \(T_j=(θ^jG)(q(x)^p)\) and
+
+\[
+a=BT_0,\qquad b_1=a\xi+T_1,\qquad
+b_2=a\xi^2/2+\xi T_1+B^{-1}T_2.
+\]
+
+These series are integral in the required truncated range. Differentiating (24), noting that \(D T_j=pB^{-1}T_{j+1}\), and using \(Du+u^{2}=(V+u^{2})/2\), gives
+
+\[
+(p^3H,p^3DH,p^3D^2H)
+\equiv(a,ar+pb_1,av_0+prb_1+p^2b_2)\pmod{p^3}.\tag{27}
+\]
+
+For source polynomials \(P_{0},P_{1},P_{2}\), define the exact rational map
+
+\[
+F_0=P_0+rP_1+v_0P_2,\qquad F_1=P_1+rP_2.
+\]
+
+Its scaled image in (27) is \(aF_{0}+pb_{1}F_{1}+p^{2}b_{2}P_{2}\). Clearing the denominator \((PQ_p)^{2}\) shows that the image dimension of \(F_{0}\) is at most
+
+\[
+b=d+4\sigma+4,
+\]
+
+because \(r,v_{0}\) are bounded at infinity. The integral kernel of this exact map is saturated: its quotient embeds in a vector space over \(\mathbb{Q}_p\), and is torsion-free. A basis inside the kernel has image cap two. If needed, move extra such basis vectors into the cap-three list so its count is exactly \(c_{0}=\operatorname{min}(3d,b)\).
+
+On the reduction of this exact kernel, the double pole of \(\overline{v}_{0}\) at every simple root of \(\overline{Q}_p\) forces \(\overline{Q}_p|\overline{P}_{2}\). It is a nonzero double pole since \(\overline{r}=\overline{u}\) has residue twice a unit at a simple root and \(p≥11\). Hence \(\overline{F}_{1}\) has no \(Q_p\) poles, only simple \(P\) poles, and is bounded at infinity after allowing the source degree. It lies in \(P^{-1}\mathbb{F}_p[x]_{≤d+1}\), a space of dimension \(d+2\). Extend a basis of its kernel over \(\mathbb{F}_p\) and lift \textbf{within the exact first kernel}. For these lifted columns \(F_{0}=0\) exactly and \(F_{1}≡0 mod p\); (27) then gives cap one. The resulting integral basis has counts
+
+\[
+c_0=\min(3d,b)\quad(3),\qquad
+c_1=\min(3d-c_0,d+2)\quad(2),\qquad
+c_2=3d-c_0-c_1\quad(1).\tag{28}
+\]
+
+Parentheses give caps. Arbitrary lifts of the first reduced kernel would not suffice for this argument; the exact kernel is essential.
+
+\hypertarget{p5.-two-actual-cap-one-resonances}{%
+\subsubsection{P5. Two actual cap-one resonances}\label{p5.-two-actual-cap-one-resonances}}
+
+Let \(\mathcal{T}(a)=(P/x)L(Pa)\). Equation (9) gives its bottom coefficient \(n^{3}\) at degree \(n-1\), and top coefficient \(2401(n+2)^{3}\) at degree \(n+3\).
+
+Work first in \(\mathbb{Z}/p^{3}\mathbb{Z}\). For \(a^{+}\), set its coefficient at \(p-2\) to one. The top image coefficient vanishes, being \(2401p^{3}\). Descend through indices \(p-3,\ldots ,1\), cancelling the image coefficients above degree three with the unit top pivots. The remaining polynomial has degree at most three. Choose the constant coefficient so its value at \(-1/10\) vanishes; this is possible since
+
+\[
+\mathcal T(1)(-1/10)=-1029/500\in\mathbb Z_p^\times.
+\]
+
+The image is then \((1+10x)h^{+}\) with \(\operatorname{deg} h^{+}≤2\). Thus \(v^{+}=Pa^{+}\) has degree \(p\) and \(Lv^{+}≡h^{+}R mod p^{3}\). If \(\overline{h}^{+}=0\), it would give a nonzero polynomial homogeneous solution of degree \(p\), contradicting (23). Hence \(\overline{h}^{+}≠0\).
+
+For \(a^{-}\), start with \(x^{-p}\) and ascend through indices \(1-p,\ldots ,-1\), cancelling image degrees below \(-1\) with unit bottom pivots. The initial bottom coefficient is \(-p^{3}=0\). The remaining coefficient at degree \(-1\) also vanishes. To see this, \(D\) is skew-adjoint for the constant-term pairing, since \(CT(D(fg))=0\); it follows that \(L\) is skew-adjoint. Therefore
+
+\[
+\operatorname{CT}(BL(Pa^-))=-\operatorname{CT}(Pa^-LB)=0.
+\]
+
+All negative coefficients of \(L(Pa^{-})\) have already vanished modulo \(p^{3}\). Since \(B\) is integral with constant one, its constant coefficient vanishes as well. That is exactly the remaining degree \(-1\) coefficient of \(\mathcal{T}(a^{-})\). Choose the constant by the same correction as above. This gives \(v^{-}=Pa^{-}\), supported between \(-p\) and \(2\), with \(Lv^{-}≡h^{-}R mod p^{3}\) and \(\operatorname{deg} h^{-}≤2\).
+
+In characteristic \(p\) the homogeneous Laurent polynomial
+
+\[
+w_0=\Gamma P(x^p)/x^p
+=\overline Q_p^{\,2}P^{p-2\sigma}/x^p
+\]
+
+has bottom coefficient one and a unit coefficient at degree \(p\). The difference \(\overline{v}^{-}-w_{0}\) has no negative terms: any remaining lowest exponent strictly between \(-p\) and zero would have nonzero indicial coefficient \(n^{3}\), although its forcing is regular. The difference is a polynomial of degree \(p\) divisible by \(P\). To justify divisibility, multiply first by \(x^p\); its Laurent expression is divisible by \(P\), and \(x\) and \(P\) are coprime. The same descending pivots and the same nonzero constant correction show uniqueness for a fixed leading coefficient among such polynomials with quadratic forcing. Thus
+
+\[
+\overline v^- -w_0=\lambda\overline v^+,
+\qquad \overline h^- =\lambda\overline h^+,
+\qquad\lambda\in\mathbb F_p^\times.\tag{29}
+\]
+
+Only this modulo-\(p\) identity is used. Choose integral representatives for both resonances and their forcing polynomials. They have genuine residuals divisible by \(p^{3}\) coefficientwise as Laurent expansions.
+
+For either representative put
+
+\[
+Z_h=hK-h'J_1+h''J_2,
+\quad S(v,H)=vD^2H-(Dv)DH+(D^2v-Vv)H.
+\]
+
+Direct differentiation gives
+
+\[
+D(Z_h-S(v,H))=-vR+(hR-Lv)H.\tag{30}
+\]
+
+The right side is integral in the needed range: the residual is divisible by \(p^{3}\) and all the shifted \(H\) coefficients have cap three by (20). At every nonzero Euler index in \([-p,N_d-1]\), division costs at most one power of \(p\). At zero the positive resonance has constant zero. For the negative resonance the derivative terms in \(S\) have constant contribution \(\sum _{i≤0}3i^{2}v_iH_{-i}\). The only possibly nonintegral summand has \(i=-p\), and multiplication by \(3p^{2}\) reduces its cap to one. Since \(V(0)=0\), all \(H\) coefficients in \(CT(VvH)\) have index below \(p\), so are integral. This also proves cap one at index zero, which differentiation alone could not prove.
+
+Consequently the following \textbf{actual polynomial source vectors} have cap-one images:
+
+\[
+C^+=P(Z_{h^+}-S(v^+,H)),\qquad
+C^-=x^pP(Z_{h^-}-S(v^-,H)).\tag{31}
+\]
+
+They have integral source coefficients: \(v=Pa\) makes \(PVv=8x(1+16x+49x^{2})a\) polynomial or Laurent polynomial; the other coefficients visibly clear after the indicated shift. Their coordinate degrees are at most \(p+2,p+4\). Thus their permitted shifts number
+
+\[
+t_+=(d-p-2)_+,\qquad t_-=(d-p-4)_+.
+\]
+
+Their primitive projections modulo \(p\) are shifts of the same nonzero vector
+
+\[
+P(\overline h^+,-(\overline h^+)',(\overline h^+)''),
+\]
+
+with intervals of shift indices \([0,t_{+}-1]\) and \([p,p+t_{-}-1]\), by (29). Select one actual column for each distinct shift. The number is
+
+\[
+t=\min((d-4)_+,t_++t_-).\tag{32}
+\]
+
+If the intervals are disjoint their sizes add; if they overlap, their union has size \(d-4\). This verifies (32), including empty intervals. Polynomial multiplication by a nonzero vector is injective over a field, so these primitive projections are independent. They therefore have a unit maximal minor in the source and can be included in an integral basis.
+
+There are also \(s=d-2\) permitted shifts of \(Z_{h^{+}}\), with independent primitive projections, and cap three. The latter cap follows from (30): \(S(v^{+},H)\) has cap three and the difference has cap one. Their primitive reductions span the selected resonance projections, because multiplication by \(P\) increases degree by only two and the permitted highest resulting shift is at most \(d-3\).
+
+\hypertarget{p6.-joint-third-layer-and-fourth-layer-ranks}{%
+\subsubsection{P6. Joint third-layer and fourth-layer ranks}\label{p6.-joint-third-layer-and-fourth-layer-ranks}}
+
+Define \(\mathcal{E}=ΓD(D-\overline{u})\overline{v}^{+}\). Identity (29) allows replacing \(\overline{v}^{+}\) by \(λ^{-1}\overline{v}^{-}\), since \((D-\overline{u})w_{0}=0\). For \(v=Pa\),
+
+\[
+(D-\overline u)v=PDa+(1+2\sigma)(DP)a-2Pa\,D\overline Q_p/\overline Q_p.
+\]
+
+There are no \(P\) poles here. Differentiation introduces at most double \(Q_p\) poles, which \(Γ\) cancels. At zero the possible exponent \(-p\) is killed by the Euler factors; the remaining negative exponents lie strictly between \(-p\) and zero. They vanish because
+
+\[
+D\mathcal E=\overline h^+R\Gamma
+\]
+
+is regular and their indices are units modulo \(p\). Using \(\overline{v}^{-}\) at infinity shows growth at most two, since \(Γ\) is bounded there and \(\overline{u}=O(x^{-1})\). Hence
+
+\[
+\mathcal E=\mathcal J_p/P^{2\sigma},\qquad
+\deg\mathcal J_p\le4\sigma+2.\tag{33}
+\]
+
+By (25), the three derivative images in layer three are \((Γ,DΓ,D^{2}Γ)\overline{F}(x^p)\). On the common denominator \(P^{2σ+2}\), their numerators have degree at most \(4σ+4\): the possible \(Q_p\) poles of the logarithmic derivatives are cancelled by \(Q_p^{2}\). The concomitant in (30), whose difference has cap one, gives
+
+\[
+p^3Z_{h^+}\equiv\mathcal E\,\overline F(x^p).
+\]
+
+On the same denominator this numerator has degree at most \(4σ+6\), but it has two fewer shifts. Thus the combined third-image space of all the derivative columns and the \(s\) shifts has dimension at most \(b=d+4σ+4\). This is a joint image bound, not a sum of separate bounds.
+
+For the fourth layer, rewrite \(\mathcal{U}=K_{0}-10\mathcal{W}\) in (26). It is spanned by polynomial multiples of \(K_{0}(x^p)\) of degree at most \(d+1\), and of \(\mathcal{W}(x^p)\) of degree at most \(d\). The series start at indices \(2p\) and \(3p\); truncation below \(N_d\) therefore gives rank at most the sum of the corresponding available lengths. Independently, the \(s\) primitive projections of the cap-three shifts of \(Z_{h^{+}}\) lie in its kernel. Thus the fourth-image rank is at most
+
+\[
+q_p=\min\left(2d+2,
+\min(d+2,(N_d-2p)_+)+\min(d+1,(N_d-3p)_+)\right).\tag{34}
+\]
+
+\hypertarget{p7.-combining-all-savings-in-one-integral-basis}{%
+\subsubsection{P7. Combining all savings in one integral basis}\label{p7.-combining-all-savings-in-one-integral-basis}}
+
+Start with the derivative basis (28), keep its actual low-cap vectors, insert the \(t\) actual columns (31), and complete their primitive reductions with \(s-t\) of the shifts of \(Z_{h^{+}}\). Together these are independent modulo \(p\), so they span a saturated rank-\(3d+s\) submodule of the full \(6d\)-dimensional source. All have cap at most three; \(c_{2}+t\) have cap one and \(c_{1}\) have cap two. Their third-image rank is at most
+
+\[
+b_0=\min(c_0+s-t,b).
+\]
+
+Extend the independent reductions of the retained low-cap columns to a basis of the kernel of this third-image map, and then to a basis of the submodule. Lift the additional kernel vectors inside this cap-three submodule. Their layer-three image vanishes, so their cap is two. Keep the original cap-one vectors themselves, not arbitrary replacement lifts. If the actual rank is smaller than \(b_{0}\), designate extra cap-two vectors as cap-three; this only weakens the bound.
+
+Append a complement of rank \(3d-s\). The first submodule has no fourth image, so change the complement basis alone using its fourth-image kernel. At most \(q_p\) of those vectors need cap four; the others have cap three. No assertion of cap two is made for these new fourth-kernel lifts. Every change described is unimodular over \(\mathbb{Z}_p\).
+
+For precision, proportionality of \(h^{-}\) and \(h^{+}\) is used only modulo \(p\) to choose independent primitive reductions. No exact characteristic-zero inclusion of every resonance projection in the original \(Z_{h^{+}}\) span is assumed. The actually chosen resonance columns have zero third image, so the combined third-image bound applies to the constructed submodule. Appendix A, Section A5 states and proves the exact integral-basis lemma and checks every hypothesis for these columns.
+
+We have therefore produced \textbf{one} integral basis with the cap list
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Cap & Number of columns \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+4 & \(q_p\) \\
+3 & \(n_{3}=3d-s-q_p+b_{0}\) \\
+2 & \(n_{2}=c_{1}+c_{0}+s-t-b_{0}\) \\
+1 & \(n_{1}=c_{2}+t\) \\
+\end{longtable}
+
+The counts are nonnegative and sum to \(6d\); for example \(q_p≤3d-s\) and \(b_{0}≤c_{0}+s-t\) prove the potentially nontrivial signs. This construction is the compatibility step required for P.
+
+Rows with \(r<p\) are integral in the original source, and remain so after any integral source change. Hence the image modulo the integral target has at most
+
+\[
+r_p=\min(6d,(N_d-p)_+)
+\]
+
+nonzero invariant factors. Equivalently, at most \(r_p\) Smith exponents of \(M\) are negative. If their actual number is \(r\), every \(r\)-minor in the new source has valuation at least minus the sum of the \(r\) largest caps: multiply its columns by their cap powers before expanding. The minimum valuation of the \(r\)-minors is the sum of the \(r\) smallest Smith exponents, which here is exactly the sum of the negative exponents. Denote its negative by \(ν_p(M)\). We conclude
+
+\[
+\nu_p(M)\le T(d,p,N_d)
+:=r_p+\min(r_p,6d-n_1)+\min(r_p,q_p+n_3)+\min(r_p,q_p).\tag{35}
+\]
+
+Restricting to the actual selected rows only decreases the rank bounds used above; it does not require a new source construction. Also \(-v_p(\operatorname{det} M)≤ν_p(M)\), since positive Smith exponents can only increase the determinant valuation.
+
+\hypertarget{p8.-the-exact-profile-uniform-error-and-prime-summation}{%
+\subsubsection{P8. The exact profile, uniform error, and prime summation}\label{p8.-the-exact-profile-uniform-error-and-prime-summation}}
+
+Set \(z=p/d\). The normalized counts, with constants and floors removed, are
+
+\[
+\begin{gathered}
+b=1+4z/3,\quad c_0=\min(3,b),\quad c_1=\min(3-c_0,1),\quad c_2=3-c_0-c_1,\\
+t=\min(1,2(1-z)_+),\quad
+q=\min(2,\min(1,(7-2z)_+)+\min(1,(7-3z)_+)),\\
+b_0=\min(c_0+1-t,b),\quad n_1=c_2+t,\quad n_3=2-q+b_0,\quad r=\min(6,(7-z)_+).
+\end{gathered}
+\]
+
+Substitute these into \(r+\operatorname{min}(r,6-n_{1})+\operatorname{min}(r,q+n_{3})+\operatorname{min}(r,q)\). The result is the following continuous piecewise affine function:
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Interval & \(f(z)\) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\([0,1/2]\) & \(15+8z/3\) \\
+\([1/2,3/4]\) & \(14+14z/3\) \\
+\([3/4,1]\) & \(15+10z/3\) \\
+\([1,12/7]\) & \(19-2z/3\) \\
+\([12/7,2]\) & \(23-3z\) \\
+\([2,7/3]\) & \(29-6z\) \\
+\([7/3,3]\) & \(22-3z\) \\
+\([3,7/2]\) & \(28-5z\) \\
+\([7/2,7]\) & \(21-3z\) \\
+\([7,∞)\) & \(0\) \\
+\end{longtable}
+
+This is an all-real identity. The certificate \path{profile_certificate.py} computes every crossing of the rational affine pieces when taking a minimum or maximum, splits at those crossings, and merges equal adjacent pieces; its exact output is the table above. The two affine expressions on each resulting interval are compared by their rational coefficients. On \(z≥7\) the layer formula vanishes because \(r=0\) and all caps are nonnegative. Thus this finite computation proves the whole piecewise identity, rather than testing a grid of values. Termwise exact integration gives
+
+\[
+\int_0^7f(z)\,dz=12325/168.\tag{36}
+\]
+
+For a uniform error bound let \(L_{0}=|N_d-7d|\). The errors, measured before division by \(d\), are bounded as follows: by \(4\) for \(b,c_{0},c_{1}\); by \(8\) for \(c_{2}\); by \(2\) for \(s\); by \(6\) for \(t\); by \(12\) for \(b_{0}\); by \(14\) for \(n_{1}\) and \(q_p+n_{3}\); by \(2L_{0}+3\) for \(q_p\); and by \(L_{0}\) for \(r_p\). These follow from \(|a_+-b_+|≤|a-b|\) and the maximum-norm Lipschitz bound for the minimum of two arguments. Applying those same bounds to (35) gives
+
+\[
+|T(d,p,N_d)-df(p/d)|
+\le L_0+2\max(L_0,14)+\max(L_0,2L_0+3)
+\le5L_0+40.\tag{37}
+\]
+
+Here \(L_{0}=176\) is fixed. In particular the error is uniform in the varying prime.
+
+The prime number theorem implies \(\vartheta (X)=\sum _{p≤X}\operatorname{log} p=X+o(X)\); the usual form \(π(X)∼X/\operatorname{log} X\) is the first term of \href{https://dlmf.nist.gov/27.12.E4}{DLMF 27.12.4}, and partial summation gives this form. On each affine interval, a second partial summation, or a Riemann-Stieltjes sum against \(\vartheta (dz)/d\), gives
+
+\[
+\sum_p d f(p/d)\log p
+=d^2\int_0^7f(z)\,dz+o(d^2).
+\]
+
+There is no problematic limit at zero: \(f\) is bounded and \(\vartheta (ad)=O(ad)\), so the initial interval \([0,a]\) contributes at most \(O(ad^{2})\); first fix \(a>0\) and then let it decrease. The errors in (37) sum to \(O(d)\) since the relevant primes are below \(N_d=O(d)\) and \(\vartheta (N_d)=O(d)\).
+
+Finally, a common denominator for all required coefficients is
+
+\[
+2b_c^2\operatorname{lcm}(1,\ldots,N_d)^8,
+\]
+
+where \(b_c\) is a positive denominator of \(c\). This follows directly from the divisor sums, the integral substitutions, products in (3), and the two ordinary divisions for the primitives; the exponent eight is a permissible overestimate. For primes with \(N_d+p≥p^{2}\), one has \(p=O(\surd N_d)\); multiplying this crude logarithmic denominator bound by \(6d\) and by the number of these primes costs at most \(O(d^{3/2}\operatorname{log} d)=o(d^{2})\). The finitely many primes below eleven or dividing \(b_c\) cost \(O_c(d \operatorname{log} d)\). Outside that fixed set no prime larger than \(N_d\) occurs in a denominator.
+
+It follows from (35)-(37) that
+
+\[
+\sum_{p\ne7}\nu_p(M)\log p
+\le\frac{12325}{168}d^2+o(d^2).
+\]
+
+Since \(D_d=\operatorname{det} M≠0\), we obtain
+
+\[
+\sum_{p\ne7}v_p(D_d)\log p
+\ge-\frac{12325}{168}d^2-o(d^2).\tag{P}
+\]
+
+The factors \(49\) are units at these primes. This proves P for the same determinant and actual rows as N and A.
+
+\hypertarget{c-the-archimedean-determinant-estimate}{%
+\subsection{5. C: the Archimedean determinant estimate}\label{c-the-archimedean-determinant-estimate}}
+
+Fix the same rational parameter \(c\) as in P, now embedded in \(\mathbb{C}\). This section proves the estimate for the original seven-block determinant, with its original monomial basis and the jumps from N.
+
+\hypertarget{c1.-holomorphic-pullbacks-and-continuity-of-the-potential}{%
+\subsubsection{C1. Holomorphic pullbacks and continuity of the potential}\label{c1.-holomorphic-pullbacks-and-continuity-of-the-potential}}
+
+The products for \(x,A\) and the divisor series for \(G\) converge locally uniformly on \(|q|<1\). Thus \(H(x(q))\) is holomorphic there, and so is \(K(x(q))\) by (3). Since \(D=A^{-1}θ\), the two derivative jets are meromorphic. The ordinary primitives pull back to primitives of the holomorphic one-forms \(K(x(q))x'(q)dq\) and \(J_{1}(x(q))x'(q)dq\); the disc is simply connected, so the zero-constant primitives are holomorphic on it. On a fixed smaller closed disc, the zeros of the nonzero function \(A\) are finite, with finite orders. A polynomial \(a(q)\) with \(a(0)=1\) therefore clears all poles of the six pullbacks on a neighbourhood of that disc. Its degree and bounds do not depend on \(d\).
+
+Choose finitely many radii \(r_i<1\), and let \(μ_i\) be the pushforward under \(x(q)\) of normalized angular measure on \(|q|=r_i\). Choose positive weights \(w_i\) of sum one and put \(μ=\sum w_iμ_i\). The potential
+
+\[
+U(z)=\int\log|z-w|\,d\mu(w)
+\]
+
+is continuous, including at image self-intersections and critical values. Here is the needed uniform justification. Near a point of a source circle, the nonconstant holomorphic map has the form \(x(q)=x(q_{0})+v(q)^k\), with \(v\) a local biholomorphic coordinate and \(k≥1\). If \(|v^k-z|≤ρ\), at least one of the \(k\) factors \(v-ζ_j\) has norm at most \(ρ^{1/k}\). On each sufficiently short arc the inverse coordinate is Lipschitz. The preimage length is consequently at most a fixed constant times \(ρ^{1/k}\), uniformly in the centre \(z\). A finite cover of the circles gives
+
+\[
+\mu(B(z,\rho))\le C\rho^\alpha\qquad(0<\rho\le1)\tag{38}
+\]
+
+for fixed \(C,α>0\). Integrating this bound over \(ρ\) shows that the contribution of the logarithmic singularity at distance below \(e^{-M}\) tends to zero uniformly in \(z\). Truncated continuous potentials therefore converge uniformly to \(U\), proving continuity and finite logarithmic energy.
+
+Define
+
+\[
+I=\iint\log|z-w|\,d\mu(z)d\mu(w),\quad
+W_i=\int U\,d\mu_i,\quad t_i=\log r_i.
+\]
+
+\hypertarget{c2.-a-uniform-leading-coefficient-functional-bound}{%
+\subsubsection{C2. A uniform leading-coefficient functional bound}\label{c2.-a-uniform-leading-coefficient-functional-bound}}
+
+Choose a fixed closed disc \(\mathcal{K}\) containing the image circles in its interior. Give polynomials of degree below \(d\) the positive definite norm
+
+\[
+\|P\|_d^2=\int_{\mathcal K}|P(z)|^2e^{-2dU(z)}\,dA(z),\tag{39}
+\]
+
+and give the seven source blocks the orthogonal sum norm. Fix a small radius \(h>0\) so discs of radius \(h\) around all image points lie in \(\mathcal{K}\). By the submean inequality for \(|P|^{2}\),
+
+\[
+|P(z)|\le(\pi h^2)^{-1/2}e^{d(U(z)+\omega(h))}\|P\|_d,\tag{40}
+\]
+
+where \(ω(h)→0\) is a modulus of continuity of \(U\) on \(\mathcal{K}\).
+
+Suppose a source vector of norm one has image \(\mathcal{F}=c_nx^n+O(x^{n+1})\), \(c_n≠0\). The pole-cleared pullback \(a(q)\mathcal{F}(x(q))\) is holomorphic on the relevant source disc and begins \(c_nq^n\), since \(a(0)=1\) and \(x(q)=q+O(q^{2})\). Using (40) in the seven blocks, the fixed bounds for \(a(q)g_j(x(q))\), and the Cauchy-Schwarz inequality in the finite block index gives
+
+\[
+\log|a(q)\mathcal F(x(q))|
+\le dU(x(q))+d\omega(h)+C_h
+\]
+
+on each source circle, with \(C_h\) independent of \(d,n\) and the unit vector. Jensen's inequality for the holomorphic function divided by \(q^n\) now gives
+
+\[
+\log|c_n|\le dW_i-nt_i+d\omega(h)+C_h.\tag{41}
+\]
+
+For this use of Jensen, factor the finitely many zeros inside the circle; each factor contributes a nonnegative term to the difference between the boundary logarithmic mean and the logarithm at zero, while the nonvanishing factor has equal mean and central logarithm. Zeros on the circle are handled by a limiting radius or by integrability of their logarithmic singularities. This proves the inequality with its required hypotheses.
+
+\hypertarget{c3.-the-gram-determinant-energy-bound}{%
+\subsubsection{C3. The Gram determinant energy bound}\label{c3.-the-gram-determinant-energy-bound}}
+
+Let \(G_d\) be the Gram matrix of \(1,z,\ldots ,z^{d-1}\) for (39). Expanding two Vandermonde determinants and integrating gives the exact identity
+
+\[
+\det G_d=\frac1{d!}\int_{\mathcal K^d}
+\prod_{i<j}|z_i-z_j|^2e^{-2d\sum_iU(z_i)}\prod_i dA(z_i).\tag{42}
+\]
+
+For every probability measure \(ν\) on \(\mathcal{K}\),
+
+\[
+I(\nu)-2\int U\,d\nu\le-I.\tag{43}
+\]
+
+If \(I(ν)=-∞\) this is immediate, because \(U\) is bounded on \(\mathcal{K}\). Otherwise the pairings of \(ν,ν\), \(ν,μ\), and \(μ,μ\) are absolutely integrable: their positive parts are bounded on a compact set and their negative parts have finite integrals. Put \(σ=ν-μ\), a signed measure of total mass zero. Convolve with a smooth nonnegative radial density supported in a disc of radius tending to zero. For the resulting smooth signed measure \(σ_ρ\), its logarithmic potential is \(O(|z|^{-1})\) and its gradient is \(O(|z|^{-2})\) at infinity, by zero total mass. Integration by parts and \(Δ \operatorname{log}|z|=2πδ_{0}\) give
+
+\[
+I(\sigma_\rho)=-\frac1{2\pi}\int_{\mathbb C}|\nabla U_{\sigma_\rho}|^2\,dA\le0.
+\]
+
+The boundary term tends to zero by the stated decay. The doubly smoothed logarithmic kernel is at least the original logarithmic kernel, by the submean property and radiality; it is uniformly bounded above on compact difference sets and converges to the original kernel away from zero. The three absolute-integrability statements permit dominated convergence in the three pairings separately. Hence \(I(σ)≤0\). Expanding it proves (43).
+
+To apply (43) to (42), a discrete empirical measure cannot be inserted directly without accounting for its diagonal. Use instead the continuous bounded kernel \(k_M(z,w)=\operatorname{max}(\operatorname{log}|z-w|,-M)\) and the empirical measure \(ν_d=d^{-1}\sum δ_{z_i}\). Then
+
+\[
+\frac{2}{d^2}\sum_{i<j}\log|z_i-z_j|-\frac2d\sum_iU(z_i)
+\le\iint k_M\,d\nu_d,d\nu_d-2\int U\,d\nu_d+M/d.\tag{44}
+\]
+
+Choose maximizing configurations in the compact set, or configurations approaching the supremum. Along a subsequence their empirical measures converge weakly to a probability measure \(ν\). Keep \(M\) fixed while taking \(d→∞\) in (44). Then let \(M→∞\); decreasing convergence of the truncated kernel gives \(I(ν)\), possibly \(-∞\), and (43) gives a bound of \(-I\). The factors \(area(\mathcal{K})^d/d!\) in (42) contribute only \(O(d \operatorname{log} d)\) to the logarithm. Therefore
+
+\[
+\limsup_{d\to\infty}d^{-2}\log\det G_d\le-I.\tag{45}
+\]
+
+\hypertarget{c4.-return-to-the-original-determinant}{%
+\subsubsection{C4. Return to the original determinant}\label{c4.-return-to-the-original-determinant}}
+
+The coefficient kernels at the jumps from N form a complete flag of subspaces in the finite-dimensional source. Choose an orthonormal basis adapted to it, successively taking a unit vector perpendicular to the next kernel inside the preceding one. The image of the \(j\)-th vector begins at \(λ_j\). Its evaluation matrix at the selected jumps is triangular, and (41) bounds its diagonal entries.
+
+In one polynomial block, the absolute determinant of the change from an orthonormal basis to the monomials is \(sqrt(\operatorname{det} G_d)\), because the Gram matrix is \(T* T\). For seven blocks the factor is \((\operatorname{det} G_d)^{7/2}\). Its sign in the logarithmic bound is therefore positive. Returning to the original monomial determinant gives
+
+\[
+\log|D_d|\le\frac72\log\det G_d+
+\sum_{j=0}^{7d-1}\min_i(dW_i-\lambda_jt_i)
++7d^2\omega(h)+O_h(d).\tag{46}
+\]
+
+The sum changes by \(O(d)\) on replacing \(λ_j\) by \(j\), since \(|λ_j-j|≤176\) and the finitely many \(t_i\) are fixed. The resulting Lipschitz Riemann sum is
+
+\[
+d^2\int_0^7\min_i(W_i-kt_i)\,dk+O(d).
+\]
+
+First take the limsup in \(d\) for fixed \(h\), using (45), and only then let \(h→0\). This proves
+
+\[
+\limsup_{d\to\infty}d^{-2}\log|D_d|
+\le\int_0^7\min_i(W_i-kt_i)\,dk-\frac72I.\tag{47}
+\]
+
+This is a bound on the same determinant as (5). The pullback to \(q\) was used only to bound leading coefficients of vectors in the vanishing flag; it does not replace the selected determinant by an arbitrary minor in another coordinate.
+
+\hypertarget{c5.-the-energy-kernel-and-the-six-explicit-circles}{%
+\subsubsection{C5. The energy kernel and the six explicit circles}\label{c5.-the-energy-kernel-and-the-six-explicit-circles}}
+
+Let \(r_y=e^{-2πy}\). For the pushforwards of the two circles with parameters \(y,t>0\), their mutual energy is
+
+\[
+E(y,t)=-2\pi\min(y,t)+
+\sum_{\substack{c\ge7,\;7\mid c\\c^2yt<1}}
+\frac{4\pi\varphi(c)}{c^2}
+\left(\arccos(c\sqrt{yt})-c\sqrt{yt}\sqrt{1-c^2yt}\right).\tag{48}
+\]
+
+Here the integer \(c\) in the sum is unrelated to the fixed parameter in \(H\).
+
+To derive (48), fix \(τ=u+iy\) away from elliptic orbits. Because \(x\) has degree one on \(X_{0}(7)\), the zeros of \(x(q)-x(e^{2πiτ})\) in the \(q\)-disc correspond exactly to the \(Γ_{0}(7)\)-orbit of \(τ\), modulo translations; they are simple for these generic points. The identity coset is the point \(τ\). The other left translation cosets are parametrized by primitive lower rows \((c,d)\), with \(c>0\), \(7|c\); the sign choice removes the duplication by \(-I\). Their imaginary parts are
+
+\[
+\operatorname{Im}(\gamma\tau)=\frac{y}{(cu+d)^2+c^2y^2}.
+\]
+
+Jensen's formula on the circle of height \(t\) assigns each such zero the contribution \(2π(Im(γτ)-t)_+\). The boundary mean, as \(u\) varies, of the constant logarithm \(\operatorname{log}|x(e^{2πiτ})|\) is \(-2πy\): the quotient \(x(q)/q\) is holomorphic and nonvanishing, with constant coefficient one. Including the identity zero changes it to \(-2πmin(y,t)\).
+
+For a fixed positive \(c\), summation over coprime \(d\) and averaging \(u∈[0,1]\) gives
+
+\[
+\frac{\varphi(c)}c\int_{\mathbb R}
+\left(\frac{2\pi y}{v^2+c^2y^2}-2\pi t\right)_+dv.
+\]
+
+Indeed almost every \(v\) belongs to exactly \(φ(c)\) intervals \([d,d+c]\) with \(\operatorname{gcd}(c,d)=1\); these intervals contain one representative of every residue class in an interval of integer length \(c\). The integral is zero for \(c^{2}yt≥1\). Otherwise integrate between the endpoints \(±sqrt(y/t-c^{2}y^{2})\). The antiderivative of the rational term and the identity \(\operatorname{arctan}(sqrt(1-a^{2})/a)=\operatorname{arccos} a\) give the summand in (48). There are only finitely many \(c\) below its cutoff. The elliptic exceptions have angular measure zero, and (38) gives the logarithmic integrability required for the averaged Jensen formula. This proves (48), including its normalization and the diagonal case \(y=t\).
+
+Use
+
+\[
+(y_1,\ldots,y_6)=(1/2,1/5,19/200,11/200,7/200,23/1000),
+\] \[
+(w_1,\ldots,w_6)=(1/25,2/25,7/50,17/100,6/25,33/100).
+\]
+
+Let \(b_{0}=0\), \(b_i=7\sum _{j≤i}w_j\), \(t_i=-2πy_i\), \(W_i=\sum _jw_jE(y_i,y_j)\), and \(I=\sum _iw_iW_i\). Define
+
+\[
+J=\sum_{i=1}^6\left((b_i-b_{i-1})W_i-\frac{b_i^2-b_{i-1}^2}{2}t_i\right).\tag{49}
+\]
+
+On \([b_{i-1},b_i]\), the minimum in (47) is no larger than its \(i\)-th affine entry. Integrating gives the sufficient bound
+
+\[
+\limsup_{d\to\infty}d^{-2}\log|D_d|\le J-\frac72I.\tag{C}
+\]
+
+No claim that this assignment is the optimal partition is needed. This proves C.
+
+\hypertarget{the-finite-sign-and-the-irrationality-implication}{%
+\subsection{6. The finite sign and the irrationality implication}\label{the-finite-sign-and-the-irrationality-implication}}
+
+For (48)-(49), the attached \path{numerical_certificate.py} uses directed integer interval arithmetic on a \(10^{-60}\) grid. Its output includes
+
+\[
+\begin{aligned}
+I&=1.31811308898042028577993413666334892633270516145\ldots,\\
+J&=14.88875588544755989057663185047805272879981929418\ldots,\\
+S&:=43\log7+\tfrac72 I-J-12325/168
+\in(0.03568,0.03569).
+\end{aligned}
+\tag{50}\]
+
+The inequality, not the displayed decimal expansions, is the certificate needed. The interval operations enclose each rational arithmetic operation; square roots use integer square roots with outward rounding. The code obtains \(π\) by Machin's arctangent identity, obtains \(\operatorname{log} 7\) by the positive series \(2\sum (3/4)^{2n+1}/(2n+1)\) with a geometric tail bound, and obtains arccosines from
+
+\[
+\arccos a=2\arctan\sqrt{(1-a)/(1+a)},\qquad
+\arctan u=2\arctan\frac{u}{1+\sqrt{1+u^2}}.
+\]
+
+The last arctangent argument is below \(1/2\), so the alternating series has its explicit next-term remainder bound. Every cutoff \(c^{2}yt<1\) is decided by exact rational arithmetic. This supplies a finite proof of (50) without relying on floating-point signs.
+
+Suppose now \(η∈\mathbb{Q}\). By N the same determinants \(D_d(η)\) are nonzero rational numbers. Unique prime factorization gives the exact rational product formula
+
+\[
+\log|D_d|=\sum_p v_p(D_d)\log p.
+\]
+
+Choose the fixed \(δ=1/1000\) in (A). By A and P,
+
+\[
+\liminf_{d\to\infty}d^{-2}\log|D_d|
+\ge(43-\delta)\log7-12325/168.
+\]
+
+By C its limsup is at most \(J-7I/2\). The difference between the claimed lower and upper limits is \(S-δ \operatorname{log} 7\). Equation (50) and \(\operatorname{log} 7<2\) make this difference larger than \(0.03568-0.002>0\), impossible for a real sequence. Thus
+
+\[
+\eta\notin\mathbb Q,\qquad \zeta_7(3)=2\eta\notin\mathbb Q.
+\]
+
+The argument has not assumed \(η≠0\); rationality, including zero, was the temporary supposition contradicted. It uses the genuine constant term and the radius theorem for that same specialization, not a rational approximation to it. No parameter tending to a boundary is chosen as a function of \(d\).
+
+\clearpage
+
+\hypertarget{appendix-r.-geometric-continuation-and-exact-radius}{%
+\section{Appendix R. Geometric continuation and exact radius}\label{appendix-r.-geometric-continuation-and-exact-radius}}
+
+\hypertarget{r1.-definitions-and-the-normalization-correction}{%
+\subsection{R1. Definitions and the normalization correction}\label{r1.-definitions-and-the-normalization-correction}}
+
+Throughout, \(v(7)=1\) and \(|7|=1/7\). Set
+
+\[
+x(q)=q\prod_{7\nmid m}(1-q^m)^{-4},\qquad
+A(q)=1+4\sum_{n\ge1}\sum_{\substack{d\mid n\\7\nmid d}}d\,q^n,
+\] \[
+G(q)=\sum_{n\ge1}\sum_{\substack{d\mid n\\7\nmid d}}d^{-3}q^n.
+\]
+
+Let \(q(x)\) be the formal compositional inverse of \(x(q)\), normalized by \(q(x)=x+O(x^2)\). Write \(h_n=[x^n]H(x)\).
+
+The coordinate normalization is as follows. For
+
+\[
+t=49x,\qquad \widehat H(t)=H(t/49),
+\]
+
+one has
+
+\[
+|t|=|x|/49,\qquad \widehat h_n=49^{-n}h_n,
+\qquad |\widehat h_n|=49^n|h_n|.
+\tag{R1}
+\]
+
+Consequently, the target domains are \(|x|<49\) and \(|t|<1\). Analyticity for every \(|t|\le\rho<49\) would be a substantially stronger, different assertion and is not proved here.
+
+\hypertarget{r2.-external-inputs-precise-statements-and-checked-hypotheses}{%
+\subsection{R2. External inputs: precise statements and checked hypotheses}\label{r2.-external-inputs-precise-statements-and-checked-hypotheses}}
+
+Only the portions of the cited results used in this proof are stated. Where the source gives an unnumbered structural statement or a definition, its exact section is supplied instead of an invented theorem number.
+
+\hypertarget{r1.-overconvergent-eisenstein-specialization}{%
+\subsubsection{R1. Overconvergent Eisenstein specialization}\label{r1.-overconvergent-eisenstein-specialization}}
+
+\href{https://www.math.uchicago.edu/~fcale/papers/Beukers.pdf}{Calegari, \emph{Irrationality of certain p-adic periods for small p}, Theorem 2.3, equations (2.8)-(2.9), and Lemma 2.4}, printed pp.~1238-1239.
+
+For a continuous even weight character \(\kappa:\mathbb Z_p^\times\to\mathbb C_p^\times\), away from the trivial character, the Eisenstein family has overconvergent eigenform specialization
+
+\[
+\mathcal E_\kappa(q)=\frac{\zeta_p(\kappa)}2+
+\sum_{n\ge1}\left(\sum_{\substack{d\mid n\\p\nmid d}}\kappa(d)d^{-1}\right)q^n.
+\tag{R2}
+\]
+
+At positive even integer weights it is the stabilized classical Eisenstein series. Its constant term varies analytically away from the trivial character.
+
+Hypotheses here: \(p=7\) is prime; \(\kappa(a)=a^{-2}\) is continuous, even, and nontrivial since \(\kappa(2)=1/4\ne1\). This is integer weight \(-2\) with trivial finite nebentypus, not weight zero: the finite factor after removing the integer weight is \(\kappa(a)a^2=1\). The specialization is at a \(\mathbb Q_7\)-rational point of the Eisenstein family; we use its base change to \(K_0\) below. Lemma 2.4 and the interpolation weights identify the constant as the specified \(\eta\); see Lemma 2 below.
+
+\hypertarget{r2.-continuation-without-a-positive-weight-assumption}{%
+\subsubsection{R2. Continuation without a positive-weight assumption}\label{r2.-continuation-without-a-positive-weight-assumption}}
+
+\href{https://www.ma.imperial.ac.uk/~buzzard/maths/research/papers/wild6.pdf}{Buzzard, \emph{Analytic continuation of overconvergent eigenforms}, Theorem 5.2(2)}, printed p.~17 in the author PDF.
+
+For \(N\ge5\), \((N,p)=1\), integer \(k\), an overconvergent form of tame level \(N\), weight \(k\), and nonzero \(U_p\)-eigenvalue extends as a section of \(\omega^{\otimes k}\) over \(W_0(p)\subset X_1(N;p)^{\rm an}\).
+
+We use \((N,p,k,\lambda)=(5,7,-2,1)\). In particular, this theorem imposes no inequality \(v(\lambda)<k-1\).
+
+The model and domain are those in Buzzard Sections 1 and 4: the special fibre has two components meeting at supersingular points; \(W_0(p)\) is the tube of the component containing the cusp with subgroup \(\mu_p\). It therefore includes all supersingular tubes and the canonical ordinary component. These structural statements are unnumbered; the domain definition is on printed p.~12. The relevant coefficient formula for \(U_p\) is Proposition 5.1. The injectivity of cusp expansions for sections on connected admissible opens is stated in Section 2, pp.~6-7.
+
+To match the source's field convention, perform this application over \(K_0=\operatorname{Frac}W(\overline{\mathbb F}_7)\), and then over finite extensions as needed. The normalization restricts to the given norm on \(\mathbb Q_7\).
+
+\hypertarget{r3.-the-canonical-ordinary-disc-in-the-exact-coordinate}{%
+\subsubsection{R3. The canonical ordinary disc in the exact coordinate}\label{r3.-the-canonical-ordinary-disc-in-the-exact-coordinate}}
+
+\href{https://arxiv.org/html/math/0701168v3\#S2}{Loeffler, \emph{Spectral expansions of overconvergent modular functions}, Theorem 1}.
+
+For \(p\in\{2,3,5,7,13\}\), the normalized function
+
+\[
+f_p=\left(\frac{\Delta(p\tau)}{\Delta(\tau)}\right)^{1/(p-1)}
+\]
+
+is a coordinate on \(X_0(p)\), and its closed unit disc is the image of the ordinary locus under the canonical-subgroup section of the forgetful map.
+
+Here \(f_7=x\): their product expansions have the same normalized sixth root. Only the ordinary-disc part of Theorem 1 is used. Its geometric-point identification applies after an isometric embedding into \(\mathbb C_7\); canonical-subgroup membership is unchanged by that extension. This is a statement about the domain of a modular curve, not an assertion that our form has weight zero, and not a reuse of its recurrence.
+
+\hypertarget{r4.-supersingularity-test}{%
+\subsubsection{R4. Supersingularity test}\label{r4.-supersingularity-test}}
+
+\href{https://luisfinotti.org/math/papers/sspol.pdf}{Finotti, \emph{A formula for the supersingular polynomial}, Theorem 2.1, with the Hasse invariant defined immediately before it}, p.~3.
+
+Over a perfect field of characteristic \(p\ge5\), a nonsingular curve \(y^2=z^3+az+b\) is supersingular exactly when
+
+\[
+[z^{p-1}](z^3+az+b)^{(p-1)/2}=0.
+\tag{R3}
+\]
+
+We apply this over \(\overline{\mathbb F}_7\), a perfect field, to smooth short Weierstrass equations. Lemma 5 computes the criterion, including \(b=0\); no formula requiring \(b\ne0\) is used.
+
+\hypertarget{r5.-finiteness-of-the-auxiliary-cover}{%
+\subsubsection{R5. Finiteness of the auxiliary cover}\label{r5.-finiteness-of-the-auxiliary-cover}}
+
+\href{https://stacks.math.columbia.edu/tag/0BXX}{Stacks Project, Lemma 53.2.4}: a morphism from a proper scheme of dimension at most one to a separated scheme over a field is finite if it is nonconstant on every one-dimensional irreducible component.
+
+Our source is the smooth proper modular curve \(X_1(5;7)\); its forgetful map is nonconstant, and its target is \(X_0(7)\simeq\mathbb P^1\). Flatness and the degree are checked in Lemma 8, not assumed from finiteness.
+
+\hypertarget{r6.-analytic-algebras-and-cusp-comparison}{%
+\subsubsection{R6. Analytic algebras and cusp comparison}\label{r6.-analytic-algebras-and-cusp-comparison}}
+
+\href{https://swc-math.github.io/aws/2007/ConradNotes11Mar.pdf}{Conrad, \emph{Several approaches to non-archimedean geometry}}: Definition 1.1.2 defines \(K\langle z\rangle\) by coefficient decay; Theorem 1.2.6(2),(R3) says algebra maps between affinoid algebras are continuous and module-finite algebras over affinoid algebras are affinoid. Example 2.4.6 constructs analytification, compatible with fibre products. Theorem 3.1.1 identifies the sheaf of a finite module and its restriction by tensor product.
+
+All fields used here are complete and nontrivially valued. The algebras to which these results are applied are explicitly constructed in Lemma 8.
+
+\href{https://math.stanford.edu/~conrad/papers/genpaper.pdf}{Conrad, \emph{Modular curves and rigid-analytic spaces}, Example 3.2.10} gives compatibility of algebraic, complex and p-adic cusp expansions of modular forms over number fields. It applies to the rational modular functions/forms \(x,j,A\). For the nonclassical specialization, its cusp expansion is supplied by R1, not inferred by complex specialization.
+
+\hypertarget{r3.-numbered-proof}{%
+\subsection{R3. Numbered proof}\label{r3.-numbered-proof}}
+
+\hypertarget{lemma-1.-the-prescribed-formal-series-define-an-analytic-cusp-germ}{%
+\subsubsection{Lemma 1. The prescribed formal series define an analytic cusp germ}\label{lemma-1.-the-prescribed-formal-series-define-an-analytic-cusp-germ}}
+
+The coefficients of \(x(q)/q\) lie in \(\mathbb Z\), and its constant coefficient is 1. Formal coefficient recursion gives a unique inverse \(q(x)=x+\sum_{n\ge2}b_nx^n\) with \(b_n\in\mathbb Z\): at step \(n\), the new coefficient occurs with multiplier 1 and all other terms involve earlier integer coefficients.
+
+The coefficients of \(A\) lie in \(\mathbb Z_7\). Each coefficient of \(G\) is a finite sum of inverse cubes of 7-adic units, so it too lies in \(\mathbb Z_7\). These series, and \(q(x)\), therefore converge on the open unit disc. For \(|x|<1\),
+
+\[
+|q(x)-x|\le |x|^2<|x|,\qquad |q(x)|=|x|.
+\]
+
+The formal inverse identities can be evaluated there: on every strictly smaller closed disc all series converge uniformly, so substitution agrees with formal composition. Hence the given formula for \(H\) defines an analytic cusp germ with exactly its formal coefficients. Its constant term is \(\eta\). No nonvanishing assumption on \(\eta\) is used.
+
+\hypertarget{lemma-2.-the-genuine-weight-minus-two-eigenform-has-expansion-geta}{%
+\subsubsection{\texorpdfstring{Lemma 2. The genuine weight-minus-two eigenform has expansion \(G+\eta\)}{Lemma 2. The genuine weight-minus-two eigenform has expansion G+\textbackslash eta}}\label{lemma-2.-the-genuine-weight-minus-two-eigenform-has-expansion-geta}}
+
+For \(a\in\mathbb Z_7^\times\), write \(a=\omega(a)\langle a\rangle\), where \(\omega(a)^6=1\) and \(\langle a\rangle\in1+7\mathbb Z_7\). Then
+
+\[
+a^{w_\nu}=a^{-2}\langle a\rangle^{6\cdot7^\nu}\longrightarrow a^{-2}.
+\]
+
+For example, binomial expansion gives \((1+7u)^{7^\nu}\in1+7^{\nu+1}\mathbb Z_7\); the same bound gives uniform convergence on units. Thus these weights approach the nontrivial character \(\kappa(a)=a^{-2}\) within its weight-space component.
+
+In (R2), \(\kappa(d)d^{-1}=d^{-3}\), so the nonconstant coefficients are precisely those of \(G\). At \(w_\nu\) the constant term is
+
+\[
+\tfrac12(1-7^{w_\nu-1})\zeta(1-w_\nu).
+\]
+
+Analyticity of the constant term at \(\kappa\ne1\) identifies its limit with the manuscript's \(\eta\). Therefore R1 gives an actual overconvergent form \(\mathcal E_{-2}\) of integer weight \(-2\) with the required expansion, not a form postulated to have it.
+
+For \(n\ge1\), the divisors of \(7n\) prime to 7 are exactly the divisors of \(n\) prime to 7. The constant coefficient is also unchanged under \(U_7\). Consequently the expansion of \(U_7\mathcal E_{-2}-\mathcal E_{-2}\) is zero. Cusp-expansion injectivity in R2 gives
+
+\[
+U_7\mathcal E_{-2}=\mathcal E_{-2}.
+\tag{R4}
+\]
+
+Its coefficient at \(q\) is 1, so the form is nonzero and its eigenvalue is the nonzero scalar 1. The assertion \(\kappa(2)\ne1\) is entirely consistent with (R4): weight and eigenvalue are different data.
+
+\hypertarget{lemma-3.-the-multiplier-a-and-the-exact-weight-change-identity}{%
+\subsubsection{\texorpdfstring{Lemma 3. The multiplier \(A\) and the exact weight-change identity}{Lemma 3. The multiplier A and the exact weight-change identity}}\label{lemma-3.-the-multiplier-a-and-the-exact-weight-change-identity}}
+
+Logarithmic differentiation of the product for \(x\) gives
+
+\[
+\theta\log x=1+4\sum_{7\nmid m}\frac{mq^m}{1-q^m}=A(q),
+\qquad \theta=q\frac d{dq}.
+\tag{R5}
+\]
+
+Thus \(A\) is the classical weight-2 form of level \(\Gamma_0(7)\), trivial character, with the expansion in Section 1. Equivalently, in the normalization \(E_2=1-24\sum\sigma_1(n)q^n\),
+
+\[
+A(\tau)=\frac{7E_2(7\tau)-E_2(\tau)}6.
+\]
+
+Its transformation law also follows directly from \(x(\gamma\tau)=x(\tau)\): differentiation gives \(A(\gamma\tau)=(c\tau+d)^2A(\tau)\) for \(\gamma\in\Gamma_0(7)\). The modular unit \(x\) is nonzero in the upper half-plane. At a cusp, write \(x=c_0q_c^m u(q_c)\) with \(u(0)\ne0\); its logarithmic derivative in the cusp coordinate is a constant plus a convergent power series. Hence \(A\) has no cusp pole. It defines a holomorphic section of \(\omega^2\) on the entire compactified fine curve, including the domain used below.
+
+For arbitrary formal series \(f,g\), define \(U_7\sum f_nq^n=\sum f_{7n}q^n\) and \(V_7g=g(q^7)\). Direct coefficient multiplication gives
+
+\[
+[q^n]U_7(fV_7g)=\sum_{j=0}^n f_{7(n-j)}g_j
+=[q^n](gU_7f).
+\tag{R6}
+\]
+
+Take the genuine series \(E=G+\eta\), and put \(J=AE=H(x(q))\). Since \(A(0)=1\), it is formally invertible. Equations (R4) and (R6) give the actual target identity
+
+\[
+\boxed{\quad U_7\left(\frac{V_7(A)}{A}\,J\right)=J.\quad}
+\tag{R7}
+\]
+
+This derives the direction of the factor; it is \(V_7(A)/A\) for the convention \(J=AE\). It is not an assumed generic eigen-equation.
+
+Equation (R7) is also analytic near the cusp. On \(|q|\le r<1\), \(\|A-1\|\le r<1\), so \(A^{-1}=\sum_{m\ge0}(1-A)^m\) converges. Both sides of (R7) thus define analytic functions there. This does \textbf{not} furnish a global trivialization, a global \(I_7\) recurrence, or a global inverse of \(A\); none is used below.
+
+\hypertarget{lemma-4.-exact-modular-coordinate-identities}{%
+\subsubsection{Lemma 4. Exact modular-coordinate identities}\label{lemma-4.-exact-modular-coordinate-identities}}
+
+Set
+
+\[
+P=1+13x+49x^2,\quad N=1+245x+2401x^2,
+\] \[
+T=1-490x-21609x^2-235298x^3-823543x^4.
+\]
+
+Then
+
+\[
+j=\frac{PN^3}{x},\qquad PN^3-T^2=1728x,
+\qquad j-1728=\frac{T^2}{x}.
+\tag{R8}
+\]
+
+Here is a finite verification with a sufficient degree bound, not an inference from an unspecified number of coefficients. By R3, \(x\) is a coordinate, with its only zero at the infinity cusp and its only pole at the other cusp. The cusp widths of \(\Gamma_0(7)\) are 1 and 7: the latter follows by conjugating a translation by \(\begin{pmatrix}0&-1\\1&0\end{pmatrix}\) and requiring its lower-left entry to be divisible by 7. The function \(j\) has poles of those orders and no interior poles. It follows that \(jx\) is a polynomial in \(x\) of degree at most 8.
+
+Use \(j=E_4^3/\Delta\), \(E_4=1+240\sum_{n\ge1}\sigma_3(n)q^n\), and \(\Delta=q\prod_{m\ge1}(1-q^m)^{24}\). Expansion through degree 8 yields
+
+\[
+x(q)=q+4q^2+14q^3+40q^4+105q^5+252q^6+574q^7+1236q^8+O(q^9).
+\]
+
+The coefficients of both \(j(q)x(q)\) and \(P(x(q))N(x(q))^3\), from degree 0 through 8, are
+
+\[
+\begin{gathered}(1,748,199874,22291752,953061251,24011922508,\\427166876486,5905154736740,67236040348893).\end{gathered}
+\]
+
+These numbers can be obtained using only \([q^{mk}](1-q^m)^{-r}=\binom{k+r-1}{r-1}\), multiplication of truncated polynomials, and the displayed divisor sum for \(E_4\). Since \(x=q+O(q^2)\), a polynomial of degree at most 8 vanishing to order at least 9 in \(q\) is zero. This proves the first identity.
+
+Ordinary polynomial multiplication gives
+
+\[
+\begin{aligned}PN^3={}&1+748x+196882x^2+20706224x^3+695893835x^4\\&+10976181104x^5+90957030178x^6\\&+387556041628x^7+678223072849x^8.\end{aligned}
+\]
+
+Subtracting \(T^2\) gives exactly \(1728x\). This proves the remaining identities. All finite calculations were independently repeated with exact integer arithmetic.
+
+\hypertarget{lemma-5.-the-annulus-has-supersingular-reduction}{%
+\subsubsection{Lemma 5. The annulus has supersingular reduction}\label{lemma-5.-the-annulus-has-supersingular-reduction}}
+
+Let \(|x|=7^a\) with \(0<a<2\), so \(v(x)=-a\). The term valuations in \(P\) are \(0,-a,2-2a\), and \(-a\) is uniquely minimal. Those in \(N\) are \(0,2-a,4-2a\), with unique minimum 0. Therefore
+
+\[
+v(P)=-a,\qquad v(N)=0,\qquad v(j)=0.
+\tag{R9}
+\]
+
+The five term valuations of \(T\) are \(0,2-a,4-2a,6-3a,7-4a\). The middle three are positive. Hence
+
+\[
+v(T)\ge\min(0,7-4a),
+\] \[
+v(j-1728)=2v(T)+a
+\ge\min(a,14-7a)>0.
+\tag{R10}
+\]
+
+If \(T=0\), its valuation and that of \(j-1728\) are interpreted as \(+\infty\); the conclusion remains valid.
+
+To justify the reduction assertion, rather than infer good reduction from an integral invariant without explanation, put \(J_0=j\). It is a unit and \(J_0\equiv1728\) in the residue field. After adjoining a square root choose
+
+\[
+b^2=4\frac{J_0-1728}{J_0},\qquad |b|<1.
+\]
+
+The curve
+
+\[
+y^2=z^3-3z+b
+\]
+
+has invariant \(1728\cdot4/(4-b^2)=J_0\) and discriminant \(-16(-108+27b^2)\), a unit at 7. It has good reduction with residue equation \(y^2=z^3-3z\). Any elliptic curve with this invariant becomes isomorphic to it over a finite extension: for short equations with both coefficients nonzero, equality of \(j\) gives equality of \(b^2/a^3\), and adjoining a fourth root to match \(a\) then allows the sign to be adjusted to match \(b\). For \(j=1728\), both \(b\)'s are zero and matching \(a\) suffices.
+
+Finally,
+
+\[
+[z^6](z^3+az+b)^3=3b.
+\]
+
+By R4 a smooth curve in characteristic 7 is supersingular precisely when \(b=0\), equivalently \(j=1728\). This proves supersingular reduction for every point of \(1<|x|<49\), including points over finite extensions and points where \(T=0\).
+
+\hypertarget{lemma-6.-the-entire-inverse-image-of-the-disc-is-in-the-continuation-domain}{%
+\subsubsection{Lemma 6. The entire inverse image of the disc is in the continuation domain}\label{lemma-6.-the-entire-inverse-image-of-the-disc-is-in-the-continuation-domain}}
+
+Let \(Y=X_1(5;7)\) and \(\pi:Y\to X_0(7)\) forget the \(\mu_5\)-embedding while retaining the order-7 subgroup. Let \(D=\{|x|<49\}\).
+
+For \(1<|x|<49\), Lemma 5 gives supersingular reduction. In the model in R2 such points reduce to an intersection of the two components, hence belong to the infinity component's tube. Adding a tame level structure does not alter the underlying reduction type.
+
+For \(|x|\le1\), R3 identifies the pair \((E,C_7)\) as the canonical ordinary pair. At an ordinary smooth reduction, \(C_7\) reduces to the connected subgroup; at the cusp it is the multiplicative subgroup \(\mu_7\). This is precisely the infinity component in R2. That condition is independent of the choice of the \(\mu_5\)-embedding. It holds on every point above the disc, not merely the sheet containing one selected cusp. Thus
+
+\[
+\boxed{\ \pi^{-1}(D)\subset W_0(7).\ }
+\tag{R11}
+\]
+
+This proof supplies a precise justification for the manuscript's compressed connected-disc argument. Connectedness alone, without identifying the ordinary branch, would not be sufficient.
+
+\hypertarget{lemma-7.-a-genuine-weight-zero-analytic-function-exists-upstairs}{%
+\subsubsection{Lemma 7. A genuine weight-zero analytic function exists upstairs}\label{lemma-7.-a-genuine-weight-zero-analytic-function-exists-upstairs}}
+
+Pull \(\mathcal E_{-2}\) back from tame level one to tame level five. The quotient isogenies defining \(U_7\) transport the tame structure; evaluating a pulled-back form ignores that structure. Thus (R4) is preserved by pullback.
+
+R2, with its checked parameters, now supplies
+
+\[
+\mathcal E\in H^0(W_0(7),\omega^{-2})
+\]
+
+extending the initial form. Restrict to \(\pi^{-1}(D)\). Pull back \(A\) as a holomorphic section of \(\omega^2\). Their product is
+
+\[
+f=A\mathcal E\in H^0(\pi^{-1}(D),\mathcal O).
+\tag{R12}
+\]
+
+Indeed, if a local frame of \(\omega\) is \(e\), write \(A=a e^2\), \(\mathcal E=b e^{-2}\). Their product is \(ab\). Changing frame to \(ue\) changes the two coefficients by reciprocal factors \(u^{-2}\) and \(u^2\), leaving \(ab\) unchanged. Both coefficients are analytic in every such chart. This is the exact point at which the weight changes to zero.
+
+No inverse of \(A\) is involved. A zero of \(A\) makes the product vanish; it cannot create a pole.
+
+\hypertarget{lemma-8.-the-finite-map-and-analytic-trace-algebras}{%
+\subsubsection{Lemma 8. The finite map and analytic trace algebras}\label{lemma-8.-the-finite-map-and-analytic-trace-algebras}}
+
+The forgetful map \(\pi\) has degree \textbf{12}. Over a geometric generic pair \((E,C_7)\), there are \(5^2-1=24\) embeddings of \(\mu_5\) into \(E[5]\). The only generic automorphisms of \((E,C_7)\) are \(\{1,-1\}\), and their action on these embeddings is free. There are therefore 12 geometric points in the generic fibre. Characteristic zero makes this generic fibre separable. The source curve is geometrically connected, as follows from its complex modular-curve uniformization; hence this computes its degree.
+
+The compactified forgetful map is nonconstant and proper, and R5 makes it finite. At any target local DVR, its source algebra is torsion-free because each component dominates the target. A finite torsion-free module over a DVR is free. This also proves flatness at branch points. The rank is the generic degree 12.
+
+More explicitly, over the affine \(x\)-line write
+
+\[
+\pi^{-1}(\mathbb A^1_x)=\operatorname{Spec}B.
+\]
+
+The finite algebra \(B\) is a free \(K[x]\)-module of rank 12, since \(K[x]\) is a PID and \(B\) is torsion-free. For \(s<49\) in \(7^{\mathbb Q}\), pass to a finite extension \(K/K_0\) containing \(c\) with \(|c|=s\). The closed disc \(D_s\) has algebra
+
+\[
+R_s=K\langle z\rangle,\qquad x=cz,
+\]
+
+and its full preimage has algebra
+
+\[
+S_s=B\otimes_{K[x]}R_s.
+\tag{R13}
+\]
+
+It is a free rank-12 \(R_s\)-module and an affinoid algebra by R6. The identification with the preimage follows from the universal property of analytification: maps into the preimage are precisely maps to the disc together with an algebra map from \(B\) agreeing on \(K[x]\), which is the tensor product in (R13). The finite generators are integral over \(R_s\), so their images satisfy monic equations and are bounded; R6 supplies the required continuity. No infinite-dimensional trace is being used.
+
+For \(u\in S_s\), let \(M_u:S_s\to S_s\) be multiplication by \(u\), and define
+
+\[
+\operatorname{Tr}_{S_s/R_s}(u)=\operatorname{tr}(M_u)\in R_s.
+\tag{R14}
+\]
+
+A basis change conjugates \(M_u\), preserving its trace. Base change or restriction changes the entries by the corresponding ring homomorphism, so (R14) commutes with these operations. These identities prove compatibility on overlapping affinoids and after the finite extensions used to choose \(c\). Equivalently they define the trace on the finite locally free sheaf \(\pi_*\mathcal O\).
+
+The definition agrees with the algebraic finite locally free trace in \href{https://stacks.math.columbia.edu/tag/0BVH}{Stacks Project, Section 49.3}. The matrix construction above proves the particular properties needed here directly, including validity at ramification.
+
+\hypertarget{lemma-9.-the-normalized-trace-has-exactly-the-required-taylor-series}{%
+\subsubsection{Lemma 9. The normalized trace has exactly the required Taylor series}\label{lemma-9.-the-normalized-trace-has-exactly-the-required-taylor-series}}
+
+Define, on each disc and compatibly on their overlaps,
+
+\[
+\widetilde H=\frac1{12}\operatorname{Tr}_{\pi}(f).
+\tag{R15}
+\]
+
+This is analytic on \(D\). The scalar 12 is nonzero, indeed a 7-adic unit. Thus the normalization introduces no singular locus.
+
+Let \(U\) be a sufficiently small cusp disc downstairs. The initial tame-level-one form is defined over the whole canonical ordinary neighbourhood. Its pullback evaluates independently of the auxiliary level-5 structure. Because \(\mathcal E\) extends that initial section, on the \textbf{whole} preimage of \(U\),
+
+\[
+f=\pi^*\left(A(q(x))(G(q(x))+\eta)\right)=\pi^*H_{\rm cusp}.
+\tag{R16}
+\]
+
+This remains true at cusps with a ramified local parameter: both sides are pulled back from the same downstairs function, and the inverse image as a whole is used.
+
+Multiplication by the scalar \(H_{\rm cusp}\) on a rank-12 module has matrix \(H_{\rm cusp}I_{12}\). Therefore (R15) and (R16) give
+
+\[
+\widetilde H|_U=\frac1{12}\cdot12H_{\rm cusp}=H_{\rm cusp}.
+\tag{R17}
+\]
+
+Lemma 1 identifies every coefficient of this germ, so
+
+\[
+\operatorname{Taylor}_{x=0}(\widetilde H)=H(x)
+\]
+
+as an equality of full formal series, not only of a finite jet. For completeness, uniqueness of the Taylor expansion on a disc can be checked as follows. A nonzero convergent series with first nonzero coefficient \(a_m\) cannot vanish on a sufficiently small punctured disc: shrink the radius so the sum of the higher terms has norm strictly smaller than \(|a_mx^m|\). Thus an analytic difference vanishing on a cusp neighbourhood has all Taylor coefficients zero. For an analytic function on a closed disc, the defining Tate-algebra expansion is unique; the zero expansion is the zero function. These assertions apply to every smaller closed disc, so no hidden meromorphic continuation is being invoked.
+
+\hypertarget{lemma-10.-coefficient-decay-at-every-radius-below-49}{%
+\subsubsection{Lemma 10. Coefficient decay at every radius below 49}\label{lemma-10.-coefficient-decay-at-every-radius-below-49}}
+
+Fix a real number \(\rho\) with \(0<\rho<49\). Choose \(s\in7^{\mathbb Q}\) with \(\rho<s<49\), and choose \(K,c\) as in Lemma 8. By Lemmas 9 and R6,
+
+\[
+\widetilde H(cz)=\sum_{n\ge0}h_nc^nz^n\in K\langle z\rangle.
+\]
+
+By definition of this Tate algebra,
+
+\[
+|h_n|s^n\longrightarrow0.
+\]
+
+In particular \(M_s=\sup_n|h_n|s^n\) is finite. For every \(n\),
+
+\[
+0\le |h_n|\rho^n\le M_s(\rho/s)^n\longrightarrow0.
+\tag{R18}
+\]
+
+Norms of \(h_n\in\mathbb Q_7\) are unchanged by the isometric extension to \(K\). Hence (R18) is the requested assertion over \(\mathbb Q_7\), for every real \(\rho\) in the stated range. For real radii outside the value group, the larger disc \(D_s\) also gives an analytic neighbourhood of the entire closed metric disc \(|x|\le\rho\); no unjustified identification of an arbitrary real-radius disc with a strict Tate algebra is needed.
+
+\hypertarget{lemma-11.-the-exact-epsilon-dependent-normalized-inequality}{%
+\subsubsection{Lemma 11. The exact epsilon-dependent normalized inequality}\label{lemma-11.-the-exact-epsilon-dependent-normalized-inequality}}
+
+By (R1) and Lemma 9, \(\widehat H\) is analytic on \(|t|<1\). Given \(\epsilon>0\), choose rational \(\delta\) with \(0<\delta<\epsilon\) and set \(r=7^{-\delta}<1\). Its restricted series satisfies
+
+\[
+C=\max\left(1,\sup_n |\widehat h_n|r^n\right)<\infty.
+\]
+
+Let \(B=\log_7C\ge0\). For \(\widehat h_n\ne0\),
+
+\[
+7^{-v(\widehat h_n)-\delta n}\le C
+\quad\Longrightarrow\quad
+v(\widehat h_n)\ge-\delta n-B\ge-\epsilon n-B.
+\tag{R19}
+\]
+
+This proves the coefficient inequality for the specified normalized manuscript series, with the explicit nonzero-coefficient qualification. One can also obtain (R18) directly from (R19): choose \(\epsilon>0\) so that \(7^\epsilon\rho/49<1\). Then
+
+\[
+|h_n|\rho^n\le7^B(7^\epsilon\rho/49)^n\to0.
+\]
+
+At zero coefficients the norm inequality holds without applying a finite-valued valuation formula.
+
+\hypertarget{lemma-12.-why-a-global-inverse-of-a-cannot-be-a-proof-obligation}{%
+\subsubsection{\texorpdfstring{Lemma 12. Why a global inverse of \(A\) cannot be a proof obligation}{Lemma 12. Why a global inverse of A cannot be a proof obligation}}\label{lemma-12.-why-a-global-inverse-of-a-cannot-be-a-proof-obligation}}
+
+The polynomial \(P\) has a root \(\alpha\in\mathbb Z_7\) with \(\alpha\equiv1\pmod7\): \(P(1)\equiv0\), \(P'(R1)\equiv6\ne0\), so successive lifting gives that root. Its other root has valuation \(-2\), since their product is \(1/49\). Thus \(|\alpha|=1<49\).
+
+The root \(\alpha\) is simple; the discriminant of \(P\) is \(-27\ne0\). Also \(N(\alpha)\ne0\): a common root of \(P,N\) would satisfy \(N-49P=-8(6+49x)=0\), but \(P(-6/49)=1/7\ne0\). Equation (R8) therefore gives a simple zero of \(j\) at the coarse point \(x=\alpha\).
+
+On the upper half-plane, at an elliptic point with \(j=0\), the quotient to the \(j\)-line has local degree 3. The effective stabilizer is conjugate to that of \(\tau^2+\tau+1=0\), generated by \(\gamma=\begin{pmatrix}0&-1\\1&1\end{pmatrix}\): \(\gamma^3=-I\), and its derivative at the fixed point is a primitive cube root of unity. Averaging a local parameter against this character linearizes the action, so its invariant ring is \(\mathbb C\{u^3\}\). Since \(j\) has a simple zero as a function of the coarse \(x\), one has \(x-\alpha=u^3v(u)\) with \(v(0)\ne0\). Consequently \((d/d\tau)x\) vanishes to order 2, whereas \(x\) is nonzero there. By (R5), \(A\) vanishes. These algebraic vanishing statements persist under passage to a 7-adic embedding.
+
+Thus \(A\) has zeros above a point of the radius-49 disc. The assertion that it is analytically invertible everywhere there is false. Lemmas 7-9 never divide by it.
+
+\clearpage
+
+\hypertarget{appendix-a.-expanded-annular-and-denominator-constructions}{%
+\section{Appendix A. Expanded annular and denominator constructions}\label{appendix-a.-expanded-annular-and-denominator-constructions}}
+
+\hypertarget{a1.-the-analytic-algebra-used-in-a}{%
+\subsection{A1. The analytic algebra used in A}\label{a1.-the-analytic-algebra-used-in-a}}
+
+Fix real radii \(1<r<R<49\). Use the complete normed algebra of Laurent series
+
+\[
+\mathscr A_{r,R}=
+\left\{\sum_{n\in\mathbb Z}a_n y^n:
+|a_n|R^n\to0\ (n\to+\infty),\quad
+|a_{-n}|r^{-n}\to0\ (n\to+\infty)\right\},
+\]
+
+with norm the maximum of the two endpoint Gauss norms. Its coefficients lie in \(\mathbb{Q}_{7}\).
+
+Here are the elementary properties used. Laurent polynomials are dense by truncation. The Gauss norm of their product is at most the product of their norms, by the ultrametric inequality on each coefficient. Completing therefore defines multiplication continuously. Equivalently, each coefficient of a product is the convergent Cauchy sum: for the two opposite tails, the bounds at \(r,R\) give a geometric factor \((r/R)^n\); the coefficient-decay conditions also control the endpoints. A Cauchy sequence has coefficientwise limits, and uniform tail estimates show the limit belongs to the same algebra, proving completeness. The operator \(D\) is continuous of norm at most one, because \(|n|_{7}≤1\) for every integer \(n\), including negative integers.
+
+Consequently finite polynomial multiplication, Euler differentiation, and convergent sums commute here. Equality of elements is equality of all Laurent coefficients. These are the series-algebra facts used in the annular argument; no interchange of divergent sums is needed. The restricted-power-series convention agrees with \href{https://swc-math.github.io/aws/2007/ConradNotes11Mar.pdf}{Conrad, Definition 1.1.2}; the Laurent properties needed here have been justified above.
+
+On this closed annulus the inverses used in the construction exist by explicit geometric series:
+
+\[
+P^{-1}=(13y)^{-1}
+\sum_{m\ge0}(-1)^m\left((13y)^{-1}+(49/13)y\right)^m,
+\]
+
+because the parenthesis has norm at most \(\operatorname{max}(r^{-1},R/49)<1\), and
+
+\[
+N^{-1}=\sum_{m\ge0}(-1)^m(245y+2401y^2)^m,
+\]
+
+because \(\operatorname{max}(R/49,R^{2}/2401)<1\). In particular, neither inverse is inferred merely from a cusp constant term.
+
+The hypergeometric coefficients in the main proof satisfy, for every \(n≥1\),
+
+\[
+v_7(u_n)\ge-\lfloor\log_7(12n)\rfloor.
+\]
+
+For a point of radius \(7^β\), \(0<β<2\), the parameter \(s=T^{2}/(PN^{3})\) has Gauss valuation
+
+\[
+m_\beta=\min(\beta,14-7\beta)>0.
+\]
+
+On the whole closed annulus there is a positive lower bound for \(m_β\), namely the minimum at the two endpoints. Thus both hypergeometric sums converge in \(\mathcal{A}_{r,R}\), and their differentiated sums do also by continuity of \(D\). These constructions agree upon restriction to smaller annuli, so they give the Laurent series on \(1<|y|_{7}<49\) used below.
+
+For the homogeneous differential identity, the two hypergeometric solutions are \(\mathcal{A}(s)\) and \(\surd s \mathcal{C}(s)\). Their forms agree with \href{https://dlmf.nist.gov/15.10}{DLMF 15.10.1-2}; substituting their rational coefficient recursions proves the needed formal differential identities directly. Here \(c-a-b=0\): no nonresonant-basis assertion at \(s=1\) is used. Only the formal differential identities are used from these formulas; the 7-adic convergence was proved separately above. The two rational gauge identities (8) in the main proof give \(Lb=0\) for
+
+\[
+b=(T/N^2)\mathcal A(s)\mathcal C(s).
+\]
+
+This calculation can be read entirely algebraically. Adjoin \(g\) with \(g^{4}=P/N\). The resulting algebra is free with basis \(1,g,g^{2},g^{3}\), so the original Laurent algebra embeds in it. Moreover \(g\) is a unit, and the derivation extends by \(Dg=(w/2)g\), with \(w=(D \operatorname{log} P-D \operatorname{log} N)/2\); differentiation of the relation verifies this formula. Define \(z=T/(N^{2}g^{2})\), so \(z^{2}=s\) and \(g^{2}z=T/N^{2}\) exactly. After localizing at \(T\), the two formal hypergeometric identities and the rational gauge identities show that \(g\mathcal{A}(s)\) and \(gz\mathcal{C}(s)\) solve \(D^{2}u=(V/4)u\). Their product is \(b\), and direct differentiation of that product gives \(Lb=0\). Multiplying through by a sufficiently large power of \(T\) gives the identity in the unlocalized free algebra and hence in the original Laurent algebra. No division by \(Ds\) is necessary: use its cleared identity \(D^{2}s-p_s(Ds)^{2}=-wDs\), where \(p_s=(1-3s)/(2s(1-s))\). Also \(1-s=1728y/(PN^{3})\) is already a unit on the annulus.
+
+Cancellation of the nonzero polynomial factor is legitimate. To see that the original Laurent algebra is a domain, choose an irrational \(β\) strictly between the endpoint logarithmic radii. A nonzero series has a unique term of smallest \(v_{7}(a_n)-βn\); the minimum is attained because both tails tend to infinity, and uniqueness follows because coefficient valuations are integers. For two nonzero series their two minimizing terms give the unique leading contribution to the corresponding product coefficient. Thus the product is nonzero. The free algebra is also torsion-free over it, so clearing the localization loses no identity. This avoids assuming that any radical is globally analytic or invertible at its zeros.
+
+\hypertarget{a2.-laurent-splitting-nonzero-forcing-and-all-coefficient-indices}{%
+\subsection{A2. Laurent splitting, nonzero forcing, and all coefficient indices}\label{a2.-laurent-splitting-nonzero-forcing-and-all-coefficient-indices}}
+
+Put \(a=b/P\), \(a_{+}=\sum _{n≥-2}a_n y^n\), and \(a_{-}=\sum _{n≤-3}a_n y^n\).
+
+The retained tail \(a_{+}\) is meromorphic on \(|y|<49\), with a pole of order at most two at zero. Indeed, for any smaller positive radius choose a still larger outer annular radius below 49 and apply its coefficient bound to the positive tail. The negative tail \(a_{-}\) converges on every \(|y|>1\): choose an inner annular radius strictly between one and that radius. In the variable \(1/y\) it is a convergent power series starting in degree three, including at infinity. These conclusions follow from coefficient bounds, not from continuation across a singular point.
+
+The operator
+
+\[
+\mathcal S=P L P=\sum_{j=0}^4 y^j\beta_j(D)
+\]
+
+has the four-step band stated in the main proof, for all integer exponents. Continuity and the split give
+
+\[
+r=\mathcal S(a_+)=-\mathcal S(a_-),\qquad
+\operatorname{supp}(r)\subseteq[-2,1].
+\]
+
+Since \(r_base=\mathcal{S}(y^{-2})\) satisfies \(r_base(-10/49)=-1029/50≠0\), the finite correction
+
+\[
+\gamma=r(-10/49)/r_{\mathrm{base}}(-10/49),\quad
+a^*=a_+-\gamma y^{-2},\quad v^*=Pa^*
+\]
+
+gives the exact forcing equation
+
+\[
+L_yv^*=-h(1/y)(10+49y)/(49P(y)),\qquad\deg h\le2.
+\]
+
+The evaluation at \(-10/49\) is an evaluation of finite Laurent polynomials; convergence of \(b\) at that boundary radius is never asserted.
+
+The proof that \(h≠0\) is necessary, and is retained after checking its two ends. The formal identity
+
+\[
+\overline B=(1-y)^3\prod_{j\ge1}(1-y^{7^j})^2
+\]
+
+follows from \(\overline{B}^{3}=(1-y)^{2}\) and uniqueness of a constant-one cube root in \(\mathbb{F}_{7}[[y]]\). Its coefficient at \(7^j\) is \(-2\), because the preceding finite product has degree \((7^j+2)/3<7^j\). Integrality of \(B\) therefore makes its radius exactly one.
+
+If \(h=0\), the indicial coefficient \(n^{3}\) excludes a negative leading exponent in \(v*\); at each positive degree the same coefficient gives uniqueness of the homogeneous Taylor solution with a specified constant. Thus \(v*=λB\) formally. Its radius at least 49 forces \(λ=0\). We would then have \(b=P(a_{-}+γy^{-2})\) on the exterior disc, analytic also at infinity. Under \(z=1/(49y)\), this gives a nonzero analytic function on \(|z|<49\), solving the same homogeneous equation because \(V(y)=V(1/(49y))\) and \(L_y\) transforms to \(-L_z\). It must again be a nonzero constant multiple of \(B\), contradicting the radius-one result. Therefore \(h\) is nonzero. No nonvanishing of the zeta value is involved.
+
+For arbitrary fixed \(0<β<2\), the coefficient estimate remains
+
+\[
+v_7([y^n]v^*)\ge\beta n-C_\beta\quad(n\ge1),
+\qquad C_\beta=6/m_\beta-\min(0,7-4\beta).
+\]
+
+The retained tail includes exponents \(-2,-1\). At \(n=1\) these are handled by the same coefficient estimate for \(a\); the correction \(γPy^{-2}\) affects only exponents \(-2,-1,0\). In multiplying by \(P\), the three offsets are \(β,0,2-β\), all nonnegative. Thus there is no missing small positive index in this estimate.
+
+\hypertarget{a3.-an-explicit-integral-normalization-c4}{%
+\subsection{\texorpdfstring{A3. An explicit integral normalization: \(C=4\)}{A3. An explicit integral normalization: C=4}}\label{a3.-an-explicit-integral-normalization-c4}}
+
+At Gauss radius \(|y|=7\), the main proof's factorial estimate gives \(v_{7}(u_n)+n≥2n/3>0\) for every nonconstant hypergeometric term. Both factors are of the form \(1+\) an element of norm less than one. Also \(T/N^{2}\) is a Gauss unit and \(v_{1}(P)=-1\). Consequently
+
+\[
+v_1(b)=0,\qquad v_1(a)=1,\qquad v_7(a_n)\ge n+1\quad(n\in\mathbb Z).
+\]
+
+The four coefficients of \(r=\mathcal{S}(a_{+})\) are exactly
+
+\[
+\begin{aligned}
+r_{-2}&=-8a_{-2},\\
+r_{-1}&=-a_{-1}-105a_{-2},\\
+r_0&=-9a_{-1}-433a_{-2},\\
+r_1&=a_1+9a_0-441a_{-2}.
+\end{aligned}
+\]
+
+Their valuation lower bounds are respectively \(-1,0,-1,1\). At \(y_{0}=-10/49\), whose valuation is \(-2\), the four evaluated terms have bounds \(3,2,-1,-1\). Hence \(v_{7}(r(y_{0}))≥-1\). Since \(v_{7}(-1029/50)=3\),
+
+\[
+v_7(\gamma)\ge-4.
+\]
+
+For \(r*=r-γr_base\), the coefficient bounds at exponents \(-2,-1,0,1\) become \(-4,-3,-4,-2\). Writing \(h=h_{0}+h_{1}t+h_{2}t^{2}\) in the forcing identity gives
+
+\[
+h_0=-r^*_1,\qquad
+h_1=-r^*_0-(10/49)h_0,\qquad
+h_2=-(49/10)r^*_{-2}.
+\]
+
+It follows that \(v_{7}(h_{0})≥-2\), \(v_{7}(h_{1})≥-4\), \(v_{7}(h_{2})≥-2\).
+
+The coefficients of \(v*=Pa*\) at exponents \(-2,-1,0\) have bounds \(-4,-4,-2\); at every \(n≥1\) they have the stronger bound \(n\). Thus \textbf{every} Laurent coefficient of \(v(t)=v*(1/t)\) has valuation at least \(-4\). Multiplication by the integral polynomials in the six source coefficients
+
+\[
+\begin{aligned}
+A_1&=-Q^2D^2v+8t(49+16t+t^2)v,&A_2&=Q^2Dv,\\
+A_3&=-Q^2v,&A_4&=Q^2h,\\
+A_5&=-49Q^2h',&A_6&=49^2Q^2h'',\qquad Q=49+13t+t^2,
+\end{aligned}
+\]
+
+and multiplication of coefficients by integer derivative indices cannot reduce that lower bound. We may therefore choose the previously unspecified normalization as
+
+\[
+\boxed{C=4.}
+\]
+
+This assertion covers all negative and nonnegative coefficients. It does not rely on truncating the hypergeometric or Laurent series at a tested degree.
+
+\hypertarget{a4.-a-concrete-source-completion-and-its-exact-cost}{%
+\subsection{A4. A concrete source completion and its exact cost}\label{a4.-a-concrete-source-completion-and-its-exact-cost}}
+
+Put \(k=d-6\) and use the original columns \(u_m\), \(0≤m<k\), from A5 with \(C=4\). Their \(K\)-block is \(7^{4}t^mQ^{2}h\). Since \(h≠0\), define the finite integer
+
+\[
+a=\min_j v_7([t^j](7^4Q^2h))\ge0,
+\qquad p_0=7^{-a}7^4Q^2h\in\mathbb Z_7[t].
+\]
+
+Let \(ℓ\) be the smallest index where \(p_{0}\) has a unit coefficient. It exists, and \(ℓ≤6\). Choose the \(k\) coordinate rows in the \(K\)-block with degrees \(ℓ,ℓ+1,\ldots ,ℓ+k-1\). They all lie below \(d\). The minor of the columns \(u_m\) in these rows has entries
+
+\[
+7^a[t^{\ell+i-m}]p_0,\qquad0\le i,m<k.
+\]
+
+After extracting \(7^a\) from each column, its reduction modulo seven is lower triangular: if \(i<m\), the coefficient index is below \(ℓ\), so is divisible by seven or is negative and zero. Every diagonal coefficient is \([t^ℓ]p_{0}\), a unit. Therefore this minor has valuation exactly \(ak\).
+
+Append the ordinary coordinate vectors for every source coordinate row not selected in this minor. Order rows with the selected rows first. The completed square source matrix is
+
+\[
+U'=\begin{pmatrix}U_{\mathrm{selected}}&0\\ *&I\end{pmatrix},
+\qquad v_7(\det U')=a(d-6).
+\]
+
+The first \(k\) columns are still the original \(u_m\); none of their distinct image bounds has been changed. All appended columns are integral. This explicitly constructs the completion and pays its exact determinant cost, without an unproved saturation assertion or an unspecified choice of Smith transformations.
+
+For the image bounds, the actual Laurent relation is \(\sum A_j\widehat{g}_j=Ψ\), whose positive part has degree at most six. For selected \(r≥d\), shifting by \(m≤d-7\) eliminates that finite positive part, and yields
+
+\[
+(\widehat M u_m)_r=-7^4\sum_{j=1}^6\sum_{s\ge1}
+[t^{-m-s}]A_j\,[t^{r+s}]\widehat g_j.
+\]
+
+For fixed \(0<ε<β<2\), each summand has valuation at least
+
+\[
+4+\beta m-\epsilon r-C_\beta-B_\epsilon+(\beta-\epsilon)s.
+\]
+
+This tends to infinity with \(s\); it proves convergence and the claimed lower bound, including the first omitted index. Summing the \(k\) column bounds, using the ordinary-entry bound for the \(6d-k\) appended coordinate columns, and subtracting \(ak\), gives
+
+\[
+v_7(\det\widehat M)
+\ge(\beta/2-42\epsilon)d^2
+-\left(13\beta/2+6(175\epsilon+B_\epsilon)+C_\beta+a\right)d.
+\]
+
+The positive constant discarded in this inequality is \(21β+6(C_β+a)\). For \(0<δ<1\), choosing fixed \(β=2-δ\), \(ε=δ/84\), and adding the separately computed coordinate contribution proves
+
+\[
+v_7(D_d)\ge(43-\delta)d^2-K_\delta d.
+\]
+
+The constants \(a\) and \(B_ε\) need not be numerically evaluated for this asymptotic theorem. Their finiteness and independence of \(d\) are proved: \(h≠0\) establishes the first, and the genuine radius theorem establishes the second. Leaving their numerical values unspecified is not leaving their existence as a conjecture.
+
+\hypertarget{a5.-the-exact-compatibility-lemma-for-p}{%
+\subsection{A5. The exact compatibility lemma for P}\label{a5.-the-exact-compatibility-lemma-for-p}}
+
+Here is the integral linear-algebra statement actually used. Let \(\mathcal{O}\) be a discrete valuation ring with uniformizer \(p\), residue field \(k\), fraction field \(K\); let \(V=\mathcal{O}^{6d}\) and let \(Φ:V→K^m\) be the coefficient map. Write \(T=\mathcal{O}^m\). Assume every source vector has cap at most four, meaning \(Φ(V)⊂p^{-4}T\).
+
+Let the counts be nonnegative integers with \(c_{0}+c_{1}+c_{2}=3d\), \(s≤3d\), \(0≤b_{0}≤c_{0}+s-t\), and \(0≤q≤3d-s\). Suppose a saturated submodule \(S⊂V\) of rank \(3d+s\) has an actual basis with cap at most three, containing \(c_{2}+t\) specified cap-one vectors and a disjoint set of \(c_{1}\) specified cap-two vectors. Suppose further that
+
+\[
+\operatorname{rank}_k(p^3\Phi\bmod p\mid S/pS)\le b_0,
+\qquad
+\operatorname{rank}_k(p^4\Phi\bmod p\mid V/pV)\le q.
+\]
+
+Both maps are well-defined: changing a representative by \(pS\) or \(pV\) changes its scaled image by an integral multiple of \(p\).
+
+The retained low-cap vectors have independent reductions in the kernel of the first map. Extend those reductions to a kernel basis and then a basis of \(S/pS\). Lift the retained classes by the \textbf{same original vectors}. Lift the other classes by integral combinations of the known cap-three basis of \(S\). Added kernel vectors then have cap two, since their \(p^{3}\)-scaled images are divisible by \(p\). The lifted change-of-basis determinant is a unit because its reduction is invertible; hence these are a basis of the same \(S\), not of a smaller-index submodule.
+
+Since \(S\) is saturated, append an integral complement in \(V\). The fourth-layer map kills \(S\), so it is enough to change the basis of this complement alone. Lift a basis of its fourth-layer kernel and then a full basis of the complement. The new kernel vectors have cap three, since they were cap four before scaling and their fourth-layer reduction is zero. They are not claimed to have cap two. This leaves all earlier cap-one and cap-two vectors fixed.
+
+Counting columns gives the simultaneous cap list
+
+\[
+\begin{array}{c|c}
+4&q\\
+3&3d-s-q+b_0\\
+2&c_1+c_0+s-t-b_0\\
+1&c_2+t
+\end{array}
+\]
+
+when \(c_{0}+c_{1}+c_{2}=3d\). If an actual rank is smaller than a stated upper bound, designate extra better-cap columns as worse-cap columns to obtain the displayed counts. This only weakens the estimate. All basis changes have unit determinant, so the original integral source and its Smith invariants are preserved.
+
+\hypertarget{verification-of-every-hypothesis-for-the-actual-six-germs}{%
+\subsubsection{Verification of every hypothesis for the actual six germs}\label{verification-of-every-hypothesis-for-the-actual-six-germs}}
+
+Take \(d≥7\), \(N_d=7d+176\), \(p≥11\), \(c∈\mathbb{Q}∩\mathbb{Z}_p\), and \(N_d+p<p^{2}\). The following inputs are the concrete assertions proved in P1-P6 of the main proof, with the logical points rechecked here:
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Input to the compatibility lemma
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Verification for this system
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Full cap four & The exact decomposition \(G=G^[p]+p^{-3}G(q^p)\) gives cap three for all jets. The quadratic identity for \(K\) gives cap four, with its fourth layer only at multiples of \(p\). The shifted numerators for the two primitives give cap four at the exceptional denominator indices as well. \\
+A derivative basis with caps \(c_{0},c_{1},c_{2}\) & The first kernel is the \textbf{characteristic-zero kernel} of \(F_{0}=P_{0}+rP_{1}+(V+r^{2})P_{2}/2\). Its integral intersection is saturated. Reduction at the simple roots of \(\overline{Q}_p\) forces \(\overline{Q}_p|\overline{P}_{2}\), bounding the next image by \(d+2\). The second-kernel lifts are taken inside the exact first kernel; (27) then gives cap one. \\
+Actual cap-one resonance columns & Both \(v^{+}\) and \(v^{-}\) are constructed modulo \(p^{3}\) using unit pivots; the forcing residual of any chosen integral representative is divisible by \(p^{3}\). Equation (30) gives cap one after integration. The zero-index contribution for \(v^{-}\) is treated separately by \(3p^{2}v^{-}_{-p}H_p\); every other term there is integral. \\
+Nonzero primitive vector & \(\overline{h}^{+}≠0\) follows from the rational Cartier-kernel theorem: a nonzero polynomial homogeneous solution would have degree at least \(2p\), whereas \(\overline{v}^{+}\) has degree \(p\). \\
+Number \(t\) of independent resonance projections & Modulo \(p\), the projections are shifts of \(P(\overline{h}^{+},-(\overline{h}^{+})',(\overline{h}^{+})'')\) in the two index intervals. Keep one actual source vector per distinct shift. Their number is \(\operatorname{min}((d-4)_{+},(d-p-2)_{+}+(d-p-4)_{+})\). Nonzero polynomial multiplication makes them independent. \\
+A saturated \(S\) of rank \(3d+s\) & The \(s=d-2\) primitive projections of the shifts of \(Z_{h^{+}}\) are independent and span the retained resonance projections. Complete the latter reductions with \(s-t\) of those shifts, then add the full derivative basis. The resulting columns are independent modulo \(p\), hence have a unit maximal minor and span a saturated submodule. \\
+Joint third-layer rank \(b_{0}\) & On denominator \(P^{2σ+2}\), every derivative numerator after allowed shifts has degree at most \(d+4σ+3\). The numerator for \(Z_{h^{+}}\) has degree two greater but allows two fewer shifts. Thus their combined image has dimension at most \(b=d+4σ+4\). The actual resonances have zero third image, giving also \(c_{0}+s-t\), hence \(b_{0}=\operatorname{min}(c_{0}+s-t,b)\). \\
+Fourth-layer rank \(q_p\) & All carry terms are included: the layer is generated by polynomial multiples of \(K_{0}(x^p)\) and \(\mathcal{W}(x^p)\), beginning at \(2p\) and \(3p\), with multiplier degrees at most \(d+1,d\). Truncation gives (34). The independent primitive projections of the \(s\) cap-three shifts also give the bound \(3d-s=2d+2\). \\
+\end{longtable}
+
+There is one subtle distinction: the negative and positive resonance forcing polynomials are proportional \textbf{modulo p}. They need not be proportional over \(\mathbb{Q}_p\). The construction of \(S\) uses the actual cap-one resonance vectors and only the independence and span of their reductions. It does \textbf{not} assume an exact characteristic-zero inclusion of every resonance projection in the span of all \(Z_{h^{+}}\) shifts. Moreover their third images are zero, so the joint third-image bound continues to hold for the actually chosen \(S\). This is why the stated compatibility lemma applies without that stronger, unproved inclusion.
+
+\hypertarget{a6.-exceptional-indices-denominators-and-the-passage-to-determinants}{%
+\subsection{A6. Exceptional indices, denominators, and the passage to determinants}\label{a6.-exceptional-indices-denominators-and-the-passage-to-determinants}}
+
+The following checks complete the finite-prime argument; none is supplied by extrapolating the numerical tests.
+
+\begin{itemize}
+\tightlist
+\item
+  The two mod-\(p^{3}\) resonance constructions only invert \(n^{3}\) or \(2401(n+2)^{3}\) at indices where \(n\) or \(n+2\) is nonzero modulo \(p\). The initial vanishing pivots are multiples of \(p^{3}\), as required.
+\item
+  The remaining degree \(-1\) term in the negative construction vanishes by the constant-term identity \(CT(BLv)=-CT(vLB)=0\), not by division by zero. Since the already cancelled negative coefficients and \(B\) are integral, this proves the requisite congruence modulo \(p^{3}\).
+\item
+  The only constant lost on applying \(D\) to the negative concomitant is computed explicitly. Thus Euler integration never divides the index zero by anything.
+\item
+  Every other relevant Euler index lies in \([-p,N_d-1]\) and has absolute value below \(p^{2}\). Its valuation is at most one. Every shifted \(H\) coefficient used by the residual has index below \(N_d+p<p^{2}\), so it has cap three. Every short-series index reduced modulo \(p\) is below \(p\).
+\item
+  The carry classes for \(J_{1}\) are \(0,1 mod p\); for \(J_{2}\) they are \(0,1,2 mod p\). At \(mp\), their exceptional coefficients are respectively \(-[x^{mp-1}]RΓF(x^p)/m\) and \(+[x^{mp-2}]RΓF(x^p)/(2m)\). The \(mp+1\) carry of \(J_{2}\) equals that of \(J_{1}\). These formulas account for both primitives, rather than assuming their fourth layers are simply shifted copies of \(K_{0}\).
+\item
+  The roots of \(\overline{P}\) are distinct since its discriminant is \(-27\), and \(\overline{Q}_p\) is squarefree and coprime to \(\overline{P}\) by the Riccati residue calculation and the degree bound \(2σ<p\). Thus the pole-order deductions in the derivative kernel are valid at every root. The needed small integers \(2,3,5,7,e\) are units for the primes under consideration.
+\end{itemize}
+
+For completeness, the negative Smith length has the intrinsic interpretation
+
+\[
+\nu_p(M)=\operatorname{length}_{\mathbb Z_p}
+\left((M\mathbb Z_p^{6d}+\mathbb Z_p^m)/\mathbb Z_p^m\right).
+\]
+
+It is finite because all entries have cap four. Integral row restriction induces a surjection onto the corresponding image quotient, so cannot increase this length. Also at most \(r_p=\operatorname{min}(6d,(N_d-p)_{+})\) Smith exponents can be negative: the rows of degree below \(p\) are integral, and the remaining image embeds in the corresponding number of coordinates of \(\mathbb{Q}_p/\mathbb{Z}_p\).
+
+For the actual number \(r\) of negative exponents, the least valuation of an \(r\)-minor is the sum of those exponents. In the compatible source basis, each such minor has valuation at least minus the sum of its column caps, and therefore at least minus the sum of the \(r_p\) largest caps. Layer-counting gives exactly
+
+\[
+\nu_p(M)\le r_p+\min(r_p,6d-n_1)+\min(r_p,q_p+n_3)+\min(r_p,q_p).
+\]
+
+The all-real piecewise affine certificate and its explicit uniform error then give \(df(p/d)+O(1)\), with \(∫_{0}^{7}f=12325/168\). The constant error is uniform because \(N_d-7d=176\) is fixed. The prime number theorem gives the quadratic total cost. Primes with \(N_d+p≥p^{2}\) are at most \(O(\surd d)\) in size; the common denominator \(2b_c^{2} lcm(1,\ldots ,N_d)^8\) bounds their total cost by \(O(d^{3/2}\operatorname{log} d)\). Primes below eleven or dividing \(b_c\) form a fixed set and cost \(O_c(d \operatorname{log} d)\). Both are \(o(d^{2})\). Primes beyond \(N_d\) outside that fixed set do not occur in the denominators.
+
+Thus the actual selected determinant, not a substitute matrix, satisfies
+
+\[
+\sum_{p\ne7}v_p(D_d)\log p
+\ge-\frac{12325}{168}d^2-o(d^2).
+\]
+
+\clearpage
+\begin{thebibliography}{99}
+\raggedright
+
+\bibitem{Buzzard}
+K.~Buzzard, \emph{Analytic continuation of overconvergent eigenforms},
+J. Amer. Math. Soc. \textbf{16} (2003), 29--55.
+Theorem 5.2(2), Proposition 5.1, and Sections 1, 2, 4.
+\href{https://www.ma.imperial.ac.uk/~buzzard/maths/research/papers/wild6.pdf}{Author's manuscript}.
+The theorem is on printed p.~17 of that version.
+
+\bibitem{Calegari}
+F.~Calegari, \emph{Irrationality of certain \(p\)-adic periods for small \(p\)},
+Int. Math. Res. Not. \textbf{2005}, no.~20, 1235--1249.
+Theorem 2.3, equations (2.8)--(2.9), and Lemma 2.4.
+\href{https://www.math.uchicago.edu/~fcale/papers/Beukers.pdf}{Published article PDF};
+\href{https://arxiv.org/abs/math/0408214}{arXiv:math/0408214}.
+
+\bibitem{Loeffler}
+D.~Loeffler, \emph{Spectral expansions of overconvergent modular functions},
+2007, Theorem 1.
+\href{https://arxiv.org/abs/math/0701168v3}{arXiv:math/0701168v3};
+\href{https://arxiv.org/html/math/0701168v3#S2}{theorem text}.
+
+\bibitem{Finotti}
+L.~R.~A.~Finotti, \emph{A formula for the supersingular polynomial},
+Theorem 2.1 (Deuring--Hasse criterion) and its preceding definition.
+\href{https://luisfinotti.org/math/papers/sspol.pdf}{Author's manuscript}.
+
+\bibitem{ConradRigid}
+B.~Conrad, \emph{Several approaches to non-archimedean geometry},
+Arizona Winter School notes, 2007.
+Definition 1.1.2; Theorems 1.2.6 and 3.1.1; Example 2.4.6.
+\href{https://swc-math.github.io/aws/2007/ConradNotes11Mar.pdf}{Notes}.
+
+\bibitem{ConradModular}
+B.~Conrad, \emph{Modular curves and rigid-analytic spaces},
+Example 3.2.10 (comparison of cusp expansions).
+\href{https://math.stanford.edu/~conrad/papers/genpaper.pdf}{Author's manuscript}.
+
+\bibitem{StacksCurves}
+The Stacks Project Authors, \emph{Curves and function fields},
+Lemma 53.2.4.
+\href{https://stacks.math.columbia.edu/tag/0BXX}{Section 53.2}.
+
+\bibitem{StacksTrace}
+The Stacks Project Authors,
+\emph{Discriminant of a finite locally free morphism},
+Section 49.3, definition of trace.
+\href{https://stacks.math.columbia.edu/tag/0BVH}{Tag 0BVH}.
+
+\bibitem{EdixhovenKhare}
+B.~Edixhoven and C.~Khare, \emph{Hasse invariant and group cohomology},
+2002, introductory Hasse-invariant congruence.
+\href{https://arxiv.org/abs/math/0210401}{arXiv:math/0210401}.
+
+\bibitem{Fonseca}
+T.~J.~Fonseca, \emph{Higher Ramanujan equations I: moduli stacks of abelian
+varieties and higher Ramanujan vector fields}, 2016, Introduction.
+\href{https://arxiv.org/abs/1612.05081}{arXiv:1612.05081}.
+
+\bibitem{Savitt}
+D.~Savitt, \emph{An elementary proof of Newman's eta-quotient theorem},
+2025, Theorem 1.1 and Section 2.
+\href{https://arxiv.org/abs/2507.16225}{arXiv:2507.16225}.
+
+\bibitem{DLMF}
+NIST Digital Library of Mathematical Functions,
+Section 27.12, \emph{Asymptotic formulas: primes}.
+\href{https://dlmf.nist.gov/27.12}{Prime number theorem}.
+
+\bibitem{DLMFHypergeometric} NIST Digital Library of Mathematical Functions, Section 15.10, \emph{Hypergeometric differential equation}, equations 15.10.1--15.10.2. \href{https://dlmf.nist.gov/15.10}{Equation and solution formulas}.
+\end{thebibliography}
+
+\end{document}

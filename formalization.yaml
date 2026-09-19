@@ -1,0 +1,266 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+# formalization.yaml v0.4, following the Palomar submission contract
+# (PalomarRegistry/PalomarSubmission @ 3561d237dcc4b28482558ad28a64d767d7cc8615 and
+#  PalomarRegistry/PalomarPolicy @ 792c7c0b9e798bd02719e795ef11fa2b5929e067, both read 2026-09-19).
+version: "v0.4"
+
+project:
+  name: "Irrationality of the 7-adic zeta value ζ₇(3)"
+  description: >-
+    A complete Lean 4 / Mathlib proof that the 7-adic zeta value ζ₇(3) is irrational. Here
+    ζ₇(3) = L₇(3, ω⁻²) is the Kubota–Leopoldt value, equal to the 7-adic limit of the
+    Euler-corrected Bernoulli numbers −(1 − 7^{w−1}) B_w / w over the weights
+    w = 6·7^{n+1} − 2. The same is proved for η = ζ₇(3)/2.
+    The proof is a determinant irrationality argument on the modular curve X₀(7), in four parts:
+    independence of seven explicit germs attached to the weight −2 seven-adic Eisenstein series,
+    with a uniform zero estimate; a seven-adic annular saving; an auxiliary-prime denominator
+    estimate; and an Archimedean energy estimate with a kernel-checked numerical margin.
+    It also uses an internal proof of the geometric continuation of the target series to every
+    radius below 49, via a twisted U₇ matrix bound and initial overconvergence obtained from
+    classical Eisenstein approximants.
+    The Lean endpoints depend only on propext, Classical.choice and Quot.sound.
+    The mathematical argument has not been refereed.
+    The work is human-directed, with extensive AI assistance in both the mathematics and the Lean
+    development; see the automation section and PROVENANCE.md.
+  # Human authors only (Palomar human-authorship rule).
+  authors:
+    - "Yi Taifeng"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Yi Taifeng"
+
+classification:
+  arxiv:
+    - "math.NT"
+  msc2020:
+    - "11J72"
+    - "11S40"
+    - "11F33"
+    - "11F85"
+    - "11B68"
+    - "68V20"
+
+sources:
+  - title: >-
+      Irrationality of ζ₇(3): first presented by this formalization and its companion manuscript
+      "A determinant argument for the irrationality of ζ₇(3)" (Yi Taifeng, 15 September 2026,
+      unrefereed, not otherwise published)
+    type: original-proof
+    relationship: other
+    authors:
+      - "Yi Taifeng"
+    note: >-
+      The companion manuscript was developed with the same human–AI collaboration as the Lean
+      proof. It cites published geometric results for the radius-49 continuation. The Lean
+      development instead proves that continuation internally.
+  - title: "Irrationality of certain p-adic periods for small p"
+    type: paper
+    authors:
+      - "Frank Calegari"
+    id: "doi:10.1155/IMRN.2005.1235"
+    location: "Int. Math. Res. Not. 2005, no. 20, 1235–1249; arXiv:math/0408214"
+    relationship: background
+    note: >-
+      Proves irrationality of ζ_p(3) for p = 2, 3 with overconvergent p-adic modular forms. It
+      motivates the method; the present result (p = 7) is not contained in it.
+    author_endorsement: not-contacted
+  - title: "Irrationality of some p-adic L-values"
+    type: paper
+    authors:
+      - "Frits Beukers"
+    id: "doi:10.1007/s10114-007-1029-2"
+    location: "Acta Math. Sin. (Engl. Ser.) 24 (2008), 663–686"
+    relationship: background
+    author_endorsement: not-contacted
+  - title: "On the irrationality of certain p-adic zeta values"
+    type: paper
+    authors:
+      - "Li Lai"
+      - "Cezar Lupu"
+      - "Johannes Sprang"
+    id: "doi:10.1007/s40687-025-00559-x"
+    location: "Res. Math. Sci. 12 (2025), article 77; arXiv:2505.23088"
+    relationship: background
+    note: >-
+      States that the irrationality of ζ_p(3) is open for every prime p ≥ 5, and gives the
+      limit definition of ζ_p(s) that agrees with the Challenge definition.
+    author_endorsement: not-contacted
+  - title: "Analytic continuation of overconvergent eigenforms"
+    type: paper
+    authors:
+      - "Kevin Buzzard"
+    id: "doi:10.1090/S0894-0347-02-00405-8"
+    location: "J. Amer. Math. Soc. 16 (2003), 29–55"
+    relationship: background
+    note: >-
+      The continuation technique that the earlier, axiom-based stage of the project relied on.
+      The final proof establishes the needed radius-49 continuation of the specific target
+      series directly in Lean. It does not formalize the general theorem.
+    author_endorsement: not-contacted
+  - title: "An introduction to p-adic L-functions"
+    type: paper
+    authors:
+      - "Joaquín Rodrigues Jacinto"
+      - "Chris Williams"
+    id: "arXiv:2309.15692"
+    relationship: background
+    note: >-
+      The measure-theoretic construction of the Kubota–Leopoldt function used, through the
+      adapted Lean formalization listed under related_formalizations, to construct ζ₇(3).
+    author_endorsement: not-contacted
+
+related_formalizations:
+  - id: "https://github.com/CBirkbeck/padic-L-functions/tree/45307015169791f1316f23a459c8e92ed5961c54"
+    relationship: builds-on
+    note: >-
+      The Kubota–Leopoldt measure construction (PadicLFunctions/) is adapted from this repository
+      under Apache-2.0, with the copyright notices kept. See history/KL_CONSTRUCTION_PROVENANCE.md.
+  - id: "https://github.com/CBirkbeck/LeanModularForms/tree/512911ce1a936ac9054415c5c72701fbd5cd5ae5"
+    relationship: adapts
+    note: "The level-raising module (LeanModularForms/) is adapted under Apache-2.0."
+  - id: "ANR-FALSE PadicModForms (Riccardo Brasca), revision f463dbbae6d24e08538ebe49b86718f094c5026a"
+    relationship: adapts
+    note: >-
+      Some uniform power-series topology, Serre p-adic modular form presentation and q-expansion
+      derivative lemmas are adapted under Apache-2.0 (history/UNIFORM_PROVENANCE.md,
+      history/THIRD_PARTY_SECTION11.md).
+  - id: "arXiv:2302.14491"
+    relationship: other
+    note: >-
+      Narayanan's Lean 3 formalization of p-adic L-functions. Consulted as a reference only; no
+      code from it is imported.
+
+status:
+  scope: >-
+    Formalized in full: ζ₇(3) ∉ ℚ and η = ζ₇(3)/2 ∉ ℚ, for the genuine Kubota–Leopoldt value.
+    Challenge.lean defines ζ₇(3) as the 7-adic limit of the Euler-corrected Bernoulli
+    approximants and states their convergence (approximant_tendsto), which the Solution proves.
+    The Solution identifies this limit with the project's measure-theoretic construction
+    Zeta7Main.zeta7Three.
+    Not claimed: anything about ζ_p(3) for p ≠ 7 or about other p-adic zeta values.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+  main_results:
+    - "Zeta7Main.zeta7Three_irrational"
+    - "Zeta7Main.eta_irrational"
+    - "Zeta7Main.internal_radius49_geometric_continuation"
+
+automation:
+  methods:
+    - method: manual
+      models: []
+      framework: "n/a"
+      tool_setup: >-
+        Human mathematical direction by the author:
+        choice of the problem and the proof architecture;
+        decomposition into intermediate goals;
+        verification standards (no sorry, admit, native_decide or custom axioms; only the three
+        standard axioms);
+        identification and rejection of conditional dependencies, notably the former external
+        radius-49 axiom;
+        repeated evaluation and redirection of proposed approaches;
+        supply of source material;
+        final validation and acceptance.
+      prompting_notes: "n/a"
+    - method: agent
+      models:
+        - "Claude Opus 5 (in the Claude Code sessions that completed the internal radius-49 proof, the removal of the radius axiom, the final audits and this packaging)"
+        - "model versions of earlier Claude Code sessions are not individually recorded"
+      framework: "Claude Code (Anthropic)"
+      tool_setup: >-
+        AI-assisted, human-directed. Agentic coding in the local Lean project, with lake builds,
+        axiom audits and verified checkpoints. Used for mathematical derivations, Lean proof
+        development, debugging, refactoring, symbolic computation, certificate generation,
+        dependency audits and documentation drafts.
+      cost:
+        wall_time: "many sessions over several weeks (not precisely tracked)"
+        spend_usd: "not tracked"
+        hardware: "local Windows machine for Lean builds; models via Anthropic"
+      prompting_notes: >-
+        The author gave detailed phase plans, priority orders and verification standards, and
+        redirected the work repeatedly. See PROVENANCE.md.
+    - method: other
+      models:
+        - "GPT-6 Astra"
+      framework: "not recorded"
+      tool_setup: >-
+        AI-assisted, human-directed. Used extensively for mathematical exploration, proof
+        development, Lean implementation, debugging, computational experimentation, certificate
+        generation and proof-audit work.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "not tracked"
+        hardware: "not recorded"
+      prompting_notes: "See PROVENANCE.md."
+  spend_usd: "not tracked"
+  notes: >-
+    This project was developed through substantial human–AI collaboration. GPT-6 Astra and
+    Claude Code were used extensively for mathematical exploration, proof development, Lean
+    implementation, debugging, refactoring, computational experimentation, certificate
+    generation, and proof-audit work. The human author:
+    provided detailed mathematical direction;
+    selected the research target;
+    imposed the proof and verification standards;
+    decomposed the project into intermediate goals;
+    repeatedly evaluated and redirected proposed approaches;
+    supplied guidance;
+    supervised the elimination of conditional assumptions;
+    performed final validation and acceptance of the formal proof.
+    The result should therefore be described neither as an autonomous AI proof nor as a purely
+    manually coded formalization. It is a human-directed research project with extensive AI
+    assistance in both mathematical reasoning and formal proof engineering. Correctness rests on
+    the Lean kernel: the final endpoints depend only on propext, Classical.choice and Quot.sound.
+
+fidelity:
+  divergences: >-
+    The companion manuscript defines ζ₇(3) = lim (1 − 7^{w_ν−1}) ζ(1 − w_ν) with
+    w_ν = 6·7^ν − 2, ν ≥ 1. The Challenge uses the same sequence, indexed from n = ν − 1 and
+    written with Bernoulli numbers via ζ(1 − w) = −B_w/w.
+    The manuscript cites published results for the radius-49 continuation. The Lean proof
+    replaces those citations by an internal proof.
+    No other divergences are known.
+
+review:
+  status: "author-verified"
+  reviewers:
+    - "none (no independent human mathematical review yet)"
+  notes: >-
+    The author reviewed the statement and the audit outputs, and has accepted the formal proof.
+    Mechanical checks:
+    - `lake build` passes;
+    - #print axioms for both endpoints gives exactly [propext, Classical.choice, Quot.sound];
+    - FinalInternalAudit finds no project axiom among 10,903 project declarations in the
+      import closure;
+    - Radius49CompleteAudit confirms the radius proof does not depend on the final theorems;
+    - a local surrogate of Comparator (palomar_local_check/) finds the Challenge and Solution
+      closures identical.
+    The official Comparator could not be run locally because its Landrun sandbox is Linux-only.
+    The mathematical argument has not been refereed.
+
+alignment:
+  namespace: "Zeta7Challenge"
+  statements:
+    - source: "Manuscript, Overview and precise theorem: ζ₇(3) ∉ ℚ"
+      lean: "Zeta7Challenge.zeta7Three_irrational"
+      module: "Challenge"
+      status: "proved"
+      note: "Proved in Solution from Zeta7Main.zeta7Three_irrational (Zeta7Proof/FinalTheorem.lean)."
+    - source: "Manuscript, Section 6: η = ζ₇(3)/2 ∉ ℚ"
+      lean: "Zeta7Challenge.eta_irrational"
+      module: "Challenge"
+      status: "proved"
+      note: "Proved in Solution from Zeta7Main.eta_irrational."
+    - source: "Manuscript, Overview: definition of ζ₇(3) as a 7-adic limit (Appendix R)"
+      lean: "Zeta7Challenge.approximant_tendsto"
+      module: "Challenge"
+      status: "proved"
+      note: >-
+        Certifies that the limit defining ζ₇(3) exists. Proved from
+        Zeta7Main.bernoulli_approximants_tendsto_zeta7Three.
+
+acknowledgements: >-
+  Mathlib and the Lean FRO. Chris Birkbeck (p-adic L-functions and LeanModularForms
+  formalizations), Riccardo Brasca (ANR-FALSE p-adic modular forms), Joaquín Rodrigues Jacinto and
+  Chris Williams (construction of p-adic L-functions), Ashvni Narayanan (Lean 3 p-adic
+  L-functions). The authors of the papers cited in sources.

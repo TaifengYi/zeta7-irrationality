@@ -1,0 +1,12 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "Zeta7Challenge.approximant_tendsto",
+    "Zeta7Challenge.zeta7Three_irrational",
+    "Zeta7Challenge.eta_irrational"
+  ],
+  "definition_names": [],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}
